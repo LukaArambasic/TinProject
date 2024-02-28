@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/TinProject/static/css/main.246667d3.css",
+    "main.js": "/TinProject/static/js/main.d15f5db8.js",
+    "static/js/453.ed3810f9.chunk.js": "/TinProject/static/js/453.ed3810f9.chunk.js",
+    "index.html": "/TinProject/index.html",
+    "main.246667d3.css.map": "/TinProject/static/css/main.246667d3.css.map",
+    "main.d15f5db8.js.map": "/TinProject/static/js/main.d15f5db8.js.map",
+    "453.ed3810f9.chunk.js.map": "/TinProject/static/js/453.ed3810f9.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.246667d3.css",
+    "static/js/main.d15f5db8.js"
+  ]
+}
