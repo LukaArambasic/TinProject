@@ -1,0 +1,23 @@
+
+.customContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border-radius: 8px;
+    background-color: var(--primary-color); /* Adjust the background color as needed */
+    margin: 32px;
+    padding: 16px; /* Adjust the padding as needed */
+  }
+  
+  .containerHeadline {
+    font-size: var(--font-size-headline-1);
+    font-weight: var(--font-weight-headline-1);
+    color: var(--text-color);
+    margin-bottom: 16px; /* Add margin below the headline */
+  }
+  
+
+
+
+
+

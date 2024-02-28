@@ -1,0 +1,36 @@
+
+.navbar {
+    width: 200px;
+    height:100vh;
+    background-color: var(--primary-color);
+    padding: 20px;
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .navbarTitle {
+    font-size: var(--font-size-headline-1);
+    font-weight: var(--font-weight-headline-1);
+    margin-bottom: 20px;
+  }
+  
+  .navOption {
+    display: flex;
+    align-items: center;
+    font-weight: var(--font-weight-headline-2);
+    font-size: var(--font-size-headline-2);
+    margin-bottom: 10px;
+    cursor: pointer;
+    border-radius: 8px;
+    background-color: var(--secondary-color);
+    padding: 4px 8px;
+  }
+
+.icon {
+    width: 24px;
+    margin-right: 8px;
+}
+
+
+

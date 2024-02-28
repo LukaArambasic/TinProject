@@ -1,0 +1,16 @@
+.header {
+    height: 60px;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 16px;
+    border-bottom: 1px solid black;
+    box-shadow: 0 3px 0px rgba(0, 0, 0, 0.2); /* Add a box shadow for elevation */
+  }
+
+  .pageName {
+    font-size: var(--font-size-headline-1);
+    font-weight: var(--font-weight-headline-1);
+  }

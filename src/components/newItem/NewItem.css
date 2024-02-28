@@ -1,0 +1,89 @@
+
+.newPostContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.createPostContainer {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    /* justify-content: space-between; */
+    flex-wrap: wrap;
+    gap: 32px;
+    margin-bottom: 32px;
+}
+
+.oneInputContainer {
+    display: flex;
+    flex-direction: column;
+    align-items:flex-start;
+}
+
+.oneInputField {
+    background-color: var(--secondary-color);
+    padding: 8px;
+    border-radius: 8px;
+    border: 0;
+    margin: 8px 0;
+    color: var(--text-color);
+    width: 200px;
+}
+
+.oneBigInputField {
+    background-color: var(--secondary-color);
+    padding: 8px;
+    border-radius: 8px;
+    border: 0;
+    margin: 8px 0;
+    color: var(--text-color);
+    width: 500px;
+    height: 160px;
+}
+
+::placeholder {
+    color: var(--text-color);
+}
+
+.imagesField {
+    margin-top: 8px;
+}
+
+.imagePreview {
+    max-width: 100px;
+    max-height: 100px;
+}
+
+
+.imagePreviewContainer {
+    width: 100px;
+    height: 100px;
+    margin: 8px;
+    background-color: var(--secondary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.submitButton {
+    align-self: flex-end; 
+    background-color: lightblue; 
+    border:0; 
+    border-radius: 8px;
+}
+
+.advancedHeader {
+    text-align: left;
+    margin-bottom: 16px;
+    font-size: var(--font-size-headline-2);
+    font-weight: var(--font-weight-headline-2);
+}
+
+.advancedContainer {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: max-content;
+}

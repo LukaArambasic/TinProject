@@ -1,0 +1,15 @@
+
+.postContainer {
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--secondary-color);
+    border-radius: 8px;
+    align-items: center;
+    margin-bottom: 8px;
+    /* padding: 8px; */
+}
+
+.buttonContainerPost {
+    padding: 8px;
+}
+
