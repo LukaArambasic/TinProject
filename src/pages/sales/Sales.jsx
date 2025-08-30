@@ -13,6 +13,7 @@ import { faPlus, faSearch } from "@fortawesome/free-solid-svg-icons";
 const Sales = () => {
     const [sales, setSales] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingSale, setEditingSale] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
@@ -25,10 +26,36 @@ const Sales = () => {
     };
 
     const handleCreateSale = () => {
+        setEditingSale(null);
+        setIsModalOpen(true);
+    };
+
+    const handleEditSale = (sale) => {
+        setEditingSale(sale);
         setIsModalOpen(true);
     };
 
     const handleDeleteSale = (saleToDelete) => {
+        // First, restore materials to stock when deleting a sale
+        const materials = JSON.parse(localStorage.getItem('material')) || [];
+        const products = JSON.parse(localStorage.getItem('product')) || [];
+        
+        const soldProduct = products.find(p => p.name === saleToDelete.product);
+        if (soldProduct && soldProduct.materials) {
+            const updatedMaterials = materials.map(material => {
+                const requiredMaterial = soldProduct.materials.find(rm => rm.material === material.name);
+                if (requiredMaterial) {
+                    const usedAmount = parseFloat(requiredMaterial.unit) * parseInt(saleToDelete.quantity);
+                    return {
+                        ...material,
+                        stock: parseInt(material.stock) + usedAmount
+                    };
+                }
+                return material;
+            });
+            localStorage.setItem('material', JSON.stringify(updatedMaterials));
+        }
+        
         const updatedSales = sales.filter(sale => 
             JSON.stringify(sale) !== JSON.stringify(saleToDelete)
         );
@@ -47,9 +74,40 @@ const Sales = () => {
             return;
         }
 
-        // Check and subtract materials from stock
+        let updatedSales;
+        let updatedMaterials = [...materials];
+        
+        if (editingSale) {
+            // When editing, first restore materials from the old sale
+            const oldProduct = products.find(p => p.name === editingSale.product);
+            if (oldProduct && oldProduct.materials) {
+                updatedMaterials = updatedMaterials.map(material => {
+                    const requiredMaterial = oldProduct.materials.find(rm => rm.material === material.name);
+                    if (requiredMaterial) {
+                        const usedAmount = parseFloat(requiredMaterial.unit) * parseInt(editingSale.quantity);
+                        return {
+                            ...material,
+                            stock: parseInt(material.stock) + usedAmount
+                        };
+                    }
+                    return material;
+                });
+            }
+            
+            // Update existing sale
+            updatedSales = sales.map(sale => 
+                JSON.stringify(sale) === JSON.stringify(editingSale) 
+                    ? saleData 
+                    : sale
+            );
+        } else {
+            // Add new sale
+            updatedSales = [...sales, saleData];
+        }
+        
+        // Subtract materials for the new/updated sale
         const requiredMaterials = selectedProduct.materials || [];
-        const updatedMaterials = materials.map(material => {
+        updatedMaterials = updatedMaterials.map(material => {
             const requiredMaterial = requiredMaterials.find(rm => rm.material === material.name);
             if (requiredMaterial) {
                 const usedAmount = parseFloat(requiredMaterial.unit) * parseInt(saleData.quantity);
@@ -61,18 +119,17 @@ const Sales = () => {
             return material;
         });
         
-        // Update materials in localStorage
+        // Update both materials and sales in localStorage
         localStorage.setItem('material', JSON.stringify(updatedMaterials));
-        
-        // Add new sale
-        const updatedSales = [...sales, saleData];
         localStorage.setItem('sale', JSON.stringify(updatedSales));
         setSales(updatedSales);
         setIsModalOpen(false);
+        setEditingSale(null);
     };
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
+        setEditingSale(null);
     };
 
     const filteredSales = sales.filter(sale =>
@@ -141,11 +198,19 @@ const Sales = () => {
                                 </div>
                             </div>
                         ) : (
-                            <div className="sales-grid">
+                            <div className="sales-list">
+                                <div className="sales-header-row">
+                                    <div className="header-cell">Proizvod</div>
+                                    <div className="header-cell">Količina</div>
+                                    <div className="header-cell">Datum</div>
+                                    <div className="header-cell">Profit</div>
+                                    <div className="header-cell">Akcije</div>
+                                </div>
                                 {sortedSales.map((sale, index) => (
                                     <SaleCard
                                         key={`${sale.product}-${sale.date}-${index}`}
                                         sale={sale}
+                                        onEdit={handleEditSale}
                                         onDelete={handleDeleteSale}
                                     />
                                 ))}
@@ -158,9 +223,10 @@ const Sales = () => {
             <Modal
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
-                title="Nova prodaja"
+                title={editingSale ? 'Uredi prodaju' : 'Nova prodaja'}
             >
                 <SaleForm
+                    sale={editingSale}
                     onSubmit={handleSubmitSale}
                     onCancel={handleCloseModal}
                 />

@@ -3,7 +3,7 @@ import './SaleForm.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 
-const SaleForm = ({ onSubmit, onCancel }) => {
+const SaleForm = ({ sale, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
     product: '',
     quantity: 1,
@@ -13,6 +13,16 @@ const SaleForm = ({ onSubmit, onCancel }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [materials, setMaterials] = useState([]);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (sale) {
+      setFormData({
+        product: sale.product || '',
+        quantity: sale.quantity || 1,
+        date: sale.date || new Date().toISOString().split('T')[0]
+      });
+    }
+  }, [sale]);
 
   useEffect(() => {
     const products = JSON.parse(localStorage.getItem('product')) || [];
@@ -201,7 +211,7 @@ const SaleForm = ({ onSubmit, onCancel }) => {
         </button>
         <button type="submit" className="btn btn-primary" disabled={!!error}>
           <FontAwesomeIcon icon={faCheck} />
-          Potvrdi prodaju
+          {sale ? 'Ažuriraj prodaju' : 'Potvrdi prodaju'}
         </button>
       </div>
     </form>
