@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './SaleForm.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faTimes, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 const SaleForm = ({ sale, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
@@ -75,11 +75,11 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
   };
 
   useEffect(() => {
-    if (selectedProduct && formData.quantity) {
-      validateStock();
-    }
-  }, [selectedProduct, formData.quantity, materials]);
+    const validateStock = () => {
+      if (!selectedProduct || !formData.quantity) return true;
 
+      const requiredMaterials = selectedProduct.materials || [];
+      
   const calculateTotal = () => {
     if (!selectedProduct || !formData.quantity) return 0;
     return (parseFloat(selectedProduct.pricePerUnit) * parseInt(formData.quantity)).toFixed(2);
