@@ -49,6 +49,43 @@ const NewSaleForm = () => {
             return;
         }
         
+        // Check if we have enough materials in stock
+        const materials = JSON.parse(localStorage.getItem('material')) || [];
+        const requiredMaterials = selectedProduct.materials || [];
+        
+        // Validate stock availability
+        for (const requiredMaterial of requiredMaterials) {
+            const materialInStock = materials.find(m => m.name === requiredMaterial.material);
+            if (!materialInStock) {
+                alert(`Materijal "${requiredMaterial.material}" nije pronađen u skladištu`);
+                return;
+            }
+            
+            const requiredAmount = parseFloat(requiredMaterial.unit) * quantity;
+            const availableStock = parseInt(materialInStock.stock);
+            
+            if (availableStock < requiredAmount) {
+                alert(`Nedovoljno materijala "${requiredMaterial.material}" na stanju. Potrebno: ${requiredAmount}, dostupno: ${availableStock}`);
+                return;
+            }
+        }
+        
+        // Subtract materials from stock
+        const updatedMaterials = materials.map(material => {
+            const requiredMaterial = requiredMaterials.find(rm => rm.material === material.name);
+            if (requiredMaterial) {
+                const usedAmount = parseFloat(requiredMaterial.unit) * quantity;
+                return {
+                    ...material,
+                    stock: parseInt(material.stock) - usedAmount
+                };
+            }
+            return material;
+        });
+        
+        // Update materials in localStorage
+        localStorage.setItem('material', JSON.stringify(updatedMaterials));
+        
         const itemPrice = parseFloat(selectedProduct.pricePerUnit);
         const item = {
             product: e.target.product.value,
