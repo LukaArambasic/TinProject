@@ -7,8 +7,6 @@ import Navbar from "../../components/navbar/Navbar";
 import Modal from "../../components/modal/Modal";
 import MaterialCard from "../../components/materialCard/MaterialCard";
 import MaterialForm from "../../components/materialForm/MaterialForm";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faSearch } from "@fortawesome/free-solid-svg-icons";
 
 const Material = () => {
     const [materials, setMaterials] = useState([]);
@@ -98,7 +96,7 @@ const Material = () => {
                         <div className="materials-header">
                             <div className="search-container">
                                 <div className="search-input-wrapper">
-                                    <FontAwesomeIcon icon={faSearch} className="search-icon" />
+                                    <span className="search-icon">🔍</span>
                                     <input
                                         type="text"
                                         placeholder="Pretraži materijale..."
@@ -112,7 +110,7 @@ const Material = () => {
                                 className="btn btn-primary"
                                 onClick={handleCreateMaterial}
                             >
-                                <FontAwesomeIcon icon={faPlus} />
+                                ➕
                                 Novi materijal
                             </button>
                         </div>
@@ -139,7 +137,7 @@ const Material = () => {
                                                 className="btn btn-primary"
                                                 onClick={handleCreateMaterial}
                                             >
-                                                <FontAwesomeIcon icon={faPlus} />
+                                                ➕
                                                 Dodaj prvi materijal
                                             </button>
                                         </>

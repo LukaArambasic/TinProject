@@ -1,7 +1,5 @@
 import React from 'react';
 import './ProductCard.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPenToSquare, faTrashCan, faCog } from '@fortawesome/free-solid-svg-icons';
 
 const ProductCard = ({ product, onEdit, onDelete }) => {
   const handleDelete = () => {
@@ -20,14 +18,14 @@ const ProductCard = ({ product, onEdit, onDelete }) => {
             onClick={() => onEdit(product)}
             title="Uredi proizvod"
           >
-            <FontAwesomeIcon icon={faPenToSquare} />
+            ✏️
           </button>
           <button 
             className="action-btn delete-btn" 
             onClick={handleDelete}
             title="Obriši proizvod"
           >
-            <FontAwesomeIcon icon={faTrashCan} />
+            🗑️
           </button>
         </div>
       </div>
@@ -46,7 +44,7 @@ const ProductCard = ({ product, onEdit, onDelete }) => {
       {product.materials && product.materials.length > 0 && (
         <div className="materials-section">
           <div className="materials-title">
-            <FontAwesomeIcon icon={faCog} />
+            ⚙️
             Potrebni materijali
           </div>
           <div className="materials-list">

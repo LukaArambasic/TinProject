@@ -1,7 +1,5 @@
 import React from "react";
 import './AttributeValues.css'
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 
 const AttributeValues = ({ item, name, colorDate = [], headlineArray = [] }) => {
     const filter = (a) => {
@@ -61,7 +59,7 @@ const AttributeValues = ({ item, name, colorDate = [], headlineArray = [] }) => 
                     onClick={handleDelete}
                     title="Delete item"
                 >
-                    <FontAwesomeIcon icon={faTrashCan} />
+                    🗑️
                 </button>
             </div>
         </div>

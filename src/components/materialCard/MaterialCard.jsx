@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import './MaterialCard.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashCan, faPlus, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 
 const MaterialCard = ({ material, onEdit, onDelete, onSupply }) => {
   const [supplyAmount, setSupplyAmount] = useState('');
@@ -37,14 +35,14 @@ const MaterialCard = ({ material, onEdit, onDelete, onSupply }) => {
             onClick={() => onEdit(material)}
             title="Uredi materijal"
           >
-            <FontAwesomeIcon icon={faPenToSquare} />
+            ✏️
           </button>
           <button 
             className="action-btn delete-btn" 
             onClick={handleDelete}
             title="Obriši materijal"
           >
-            <FontAwesomeIcon icon={faTrashCan} />
+            🗑️
           </button>
         </div>
       </div>
@@ -78,7 +76,7 @@ const MaterialCard = ({ material, onEdit, onDelete, onSupply }) => {
             onClick={handleSupply}
             disabled={!supplyAmount || parseInt(supplyAmount) <= 0}
           >
-            <FontAwesomeIcon icon={faPlus} />
+            ➕
             Dodaj
           </button>
         </div>

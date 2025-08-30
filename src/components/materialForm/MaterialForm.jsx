@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import './MaterialForm.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 const MaterialForm = ({ material, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
@@ -103,11 +101,11 @@ const MaterialForm = ({ material, onSubmit, onCancel }) => {
 
       <div className="form-actions">
         <button type="button" className="btn btn-cancel" onClick={onCancel}>
-          <FontAwesomeIcon icon={faTimes} />
+          ❌
           Odustani
         </button>
         <button type="submit" className="btn btn-primary">
-          <FontAwesomeIcon icon={faCheck} />
+          ✅
           {material ? 'Ažuriraj' : 'Stvori'} materijal
         </button>
       </div>

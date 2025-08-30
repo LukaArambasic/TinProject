@@ -7,8 +7,6 @@ import Navbar from "../../components/navbar/Navbar";
 import Modal from "../../components/modal/Modal";
 import SaleCard from "../../components/saleCard/SaleCard";
 import SaleForm from "../../components/saleForm/SaleForm";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faSearch } from "@fortawesome/free-solid-svg-icons";
 
 const Sales = () => {
     const [sales, setSales] = useState([]);
@@ -149,7 +147,7 @@ const Sales = () => {
                         <div className="sales-header">
                             <div className="search-container">
                                 <div className="search-input-wrapper">
-                                    <FontAwesomeIcon icon={faSearch} className="search-icon" />
+                                    <span className="search-icon">🔍</span>
                                     <input
                                         type="text"
                                         placeholder="Pretraži prodaje..."
@@ -163,7 +161,7 @@ const Sales = () => {
                                 className="btn btn-primary"
                                 onClick={handleCreateSale}
                             >
-                                <FontAwesomeIcon icon={faPlus} />
+                                ➕
                                 Nova prodaja
                             </button>
                         </div>
@@ -190,7 +188,7 @@ const Sales = () => {
                                                 className="btn btn-primary"
                                                 onClick={handleCreateSale}
                                             >
-                                                <FontAwesomeIcon icon={faPlus} />
+                                                ➕
                                                 Dodaj prvu prodaju
                                             </button>
                                         </>

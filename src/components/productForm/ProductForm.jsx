@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import './ProductForm.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faTrash, faCog, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 const ProductForm = ({ product, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
@@ -142,7 +140,7 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
       <div className="materials-section">
         <div className="materials-header">
           <div className="materials-title">
-            <FontAwesomeIcon icon={faCog} />
+            ⚙️
             Potrebni materijali
           </div>
           <button
@@ -150,7 +148,7 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
             className="add-material-btn"
             onClick={addMaterial}
           >
-            <FontAwesomeIcon icon={faPlus} />
+            ➕
             Dodaj materijal
           </button>
         </div>
@@ -165,7 +163,7 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
                   className="remove-material-btn"
                   onClick={() => removeMaterial(index)}
                 >
-                  <FontAwesomeIcon icon={faTrash} />
+                  🗑️
                 </button>
               )}
             </div>
@@ -206,11 +204,11 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
 
       <div className="form-actions">
         <button type="button" className="btn btn-cancel" onClick={onCancel}>
-          <FontAwesomeIcon icon={faTimes} />
+          ❌
           Odustani
         </button>
         <button type="submit" className="btn btn-primary">
-          <FontAwesomeIcon icon={faCheck} />
+          ✅
           {product ? 'Ažuriraj' : 'Stvori'} proizvod
         </button>
       </div>

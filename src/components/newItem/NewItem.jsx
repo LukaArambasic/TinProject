@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import "./NewItem.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faPlus } from "@fortawesome/free-solid-svg-icons";
 
 const NewItem = ({ titles, onSubmit, counter, setCounter }) => {
     const [selectedFiles, setSelectedFiles] = useState([]);
@@ -161,7 +159,7 @@ const NewItem = ({ titles, onSubmit, counter, setCounter }) => {
                             setCounter(counter + 1);
                         }}
                     >
-                        <FontAwesomeIcon icon={faPlus} />
+                        ➕
                         Dodaj materijal
                     </button>
                     
@@ -205,7 +203,7 @@ const NewItem = ({ titles, onSubmit, counter, setCounter }) => {
             )}
             
             <button type="submit" className="submitButton">
-                <FontAwesomeIcon icon={faCheck} />
+                ✅
                 Spremi
             </button>
         </form>

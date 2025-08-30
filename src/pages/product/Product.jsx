@@ -7,8 +7,6 @@ import Navbar from "../../components/navbar/Navbar";
 import Modal from "../../components/modal/Modal";
 import ProductCard from "../../components/productCard/ProductCard";
 import ProductForm from "../../components/productForm/ProductForm";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faSearch } from "@fortawesome/free-solid-svg-icons";
 
 const Product = () => {
     const [vw, setVw] = useState(window.innerWidth);
@@ -84,7 +82,7 @@ const Product = () => {
                         <div className="products-header">
                             <div className="search-container">
                                 <div className="search-input-wrapper">
-                                    <FontAwesomeIcon icon={faSearch} className="search-icon" />
+                                    <span className="search-icon">🔍</span>
                                     <input
                                         type="text"
                                         placeholder="Pretraži proizvode..."
@@ -98,7 +96,7 @@ const Product = () => {
                                 className="btn btn-primary"
                                 onClick={handleCreateProduct}
                             >
-                                <FontAwesomeIcon icon={faPlus} />
+                                ➕
                                 Novi proizvod
                             </button>
                         </div>
@@ -125,7 +123,7 @@ const Product = () => {
                                                 className="btn btn-primary"
                                                 onClick={handleCreateProduct}
                                             >
-                                                <FontAwesomeIcon icon={faPlus} />
+                                                ➕
                                                 Dodaj prvi proizvod
                                             </button>
                                         </>

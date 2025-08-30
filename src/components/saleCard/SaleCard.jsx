@@ -1,7 +1,5 @@
 import React from 'react';
 import './SaleCard.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPenToSquare, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 
 const SaleCard = ({ sale, onEdit, onDelete }) => {
   const handleDelete = () => {
@@ -28,14 +26,14 @@ const SaleCard = ({ sale, onEdit, onDelete }) => {
             onClick={() => onEdit(sale)}
             title="Uredi prodaju"
           >
-            <FontAwesomeIcon icon={faPenToSquare} />
+            ✏️
           </button>
           <button 
             className="action-btn delete-btn" 
             onClick={handleDelete}
             title="Obriši prodaju"
           >
-            <FontAwesomeIcon icon={faTrashCan} />
+            🗑️
           </button>
         </div>
       </div>
