@@ -2,54 +2,24 @@ import React from 'react';
 import { Bar } from 'react-chartjs-2';
 
 const MonthlyProfitChart = ({ sales }) => {
-  // Debug: Log the sales data
-  console.log('Sales data received:', sales);
-  
   // Aggregate profits by month
   const monthlyData = sales.reduce((acc, sale) => {
     const date = new Date(sale.date);
-    // Ensure the date is valid
-    if (isNaN(date.getTime())) {
-      console.warn('Invalid date found:', sale.date);
-      return acc;
-    }
-    
     const monthYear = `${date.getMonth() + 1}/${date.getFullYear()}`;
-    const profit = parseFloat(sale.profit) || 0;
-    acc[monthYear] = (acc[monthYear] || 0) + profit;
-    console.log(`Adding ${profit} to ${monthYear}, total now: ${acc[monthYear]}`);
+    acc[monthYear] = (acc[monthYear] || 0) + sale.profit;
     return acc;
   }, {});
 
-  console.log('Monthly data aggregated:', monthlyData);
-  
   // Sort the month-year keys in ascending order
   const sortedLabels = Object.keys(monthlyData).sort((a, b) => {
-    const [monthA, yearA] = a.split('/');
-    const [monthB, yearB] = b.split('/');
-    const dateA = new Date(parseInt(yearA), parseInt(monthA) - 1, 1);
-    const dateB = new Date(parseInt(yearB), parseInt(monthB) - 1, 1);
+    const dateA = new Date(`${a}/01`);
+    const dateB = new Date(`${b}/01`);
     return dateA - dateB;
   });
 
   // Extract labels and data for the chart
   const labels = sortedLabels;
   const chartValues = sortedLabels.map(monthYear => monthlyData[monthYear]);
-  
-  console.log('Chart labels:', labels);
-  console.log('Chart values:', chartValues);
-  
-  // If no data, show empty state
-  if (labels.length === 0 || chartValues.every(val => val === 0)) {
-    return (
-      <div style={{ height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ textAlign: 'center', color: '#94a3b8' }}>
-          <p>Nema podataka o prodaji za prikaz</p>
-          <p style={{ fontSize: '14px', marginTop: '8px' }}>Dodajte prodaje da biste vidjeli grafikon</p>
-        </div>
-      </div>
-    );
-  }
 
   // Chart data object
   const chartData = {

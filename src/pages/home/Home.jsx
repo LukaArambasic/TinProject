@@ -40,23 +40,16 @@ const MaterialStockChart = () => {
 
 const SalesChart = () => {
     const [sortedData, setSortedData] = useState([]);
-    const data = JSON.parse(localStorage.getItem('sale')) || [];
+    const data = JSON.parse(localStorage.getItem('sale'));
 
     useEffect(() => {
-        if (data === null || data.length === 0) {
+        if (data === null) {
             localStorage.setItem('sale', JSON.stringify([]));
             setSortedData([]);
         } else {
-            // Process the sales data to ensure proper format
-            const processedData = data.map(sale => ({
-                ...sale,
-                profit: parseFloat(sale.profit) || 0,
-                quantity: parseInt(sale.quantity) || 0,
-                date: sale.date || new Date().toISOString().split('T')[0]
-            }));
-            setSortedData(processedData);
+            setSortedData(data);
         }
-    }, [data.length]);
+    }, []);
 
     if (sortedData.length === 0) {
         return (
