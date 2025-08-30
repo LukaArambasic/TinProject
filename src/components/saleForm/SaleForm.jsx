@@ -75,10 +75,33 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
   };
 
   useEffect(() => {
-    const validateStock = () => {
+    const validateStockEffect = () => {
       if (!selectedProduct || !formData.quantity) return true;
 
       const requiredMaterials = selectedProduct.materials || [];
+      
+      for (const requiredMaterial of requiredMaterials) {
+        const materialInStock = materials.find(m => m.name === requiredMaterial.material);
+        if (!materialInStock) {
+          setError(`Materijal "${requiredMaterial.material}" nije pronađen u skladištu`);
+          return false;
+        }
+        
+        const requiredAmount = parseFloat(requiredMaterial.unit) * parseInt(formData.quantity);
+        const availableStock = parseInt(materialInStock.stock);
+        
+        if (availableStock < requiredAmount) {
+          setError(`Nedovoljno materijala "${requiredMaterial.material}" na stanju. Potrebno: ${requiredAmount}, dostupno: ${availableStock}`);
+          return false;
+        }
+      }
+      
+      setError('');
+      return true;
+    };
+    
+    validateStockEffect();
+  }, [selectedProduct, formData.quantity, materials]);
       
   const calculateTotal = () => {
     if (!selectedProduct || !formData.quantity) return 0;
