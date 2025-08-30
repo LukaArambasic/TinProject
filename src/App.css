@@ -75,7 +75,7 @@ body {
 }
 
 .RestOfScreen {
-  min-height: 100vh;
+  flex: 1;
   background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
   padding: var(--spacing-6);
 }

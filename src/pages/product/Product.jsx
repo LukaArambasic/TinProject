@@ -18,15 +18,6 @@ const Product = () => {
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        const handleResize = () => {
-            setVw(window.innerWidth);
-        };
-        
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
-
-    useEffect(() => {
         loadProducts();
     }, []);
 
@@ -85,14 +76,10 @@ const Product = () => {
 
     return (
         <div className='App FlexRow'>
-            <div style={{ position: 'fixed', zIndex: 40 }}>
-                <Navbar />
-            </div>
-            <div style={{ flex: 1, marginLeft: "280px" }}>
-                <div style={{ position: "fixed", width: `${vw - 280}px`, zIndex: 30 }}>
-                    <Header pageName="Proizvodi" />
-                </div>
-                <div className='RestOfScreen' style={{ paddingTop: "72px" }}>
+            <Navbar />
+            <div className="main-content">
+                <Header pageName="Proizvodi" />
+                <div className='RestOfScreen'>
                     <Container headline="🔧 Upravljanje proizvodima">
                         <div className="products-header">
                             <div className="search-container">

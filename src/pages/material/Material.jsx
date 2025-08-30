@@ -148,27 +148,12 @@ const MaterialList = () => {
 }
 
 const Material = () => {
-    const [vw, setVw] = useState(window.innerWidth);
-    
-    useEffect(() => {
-        const handleResize = () => {
-            setVw(window.innerWidth);
-        };
-        
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
-
     return (
         <div className='App FlexRow'>
-            <div style={{ position: 'fixed', zIndex: 40 }}>
-                <Navbar />
-            </div>
-            <div style={{ flex: 1, marginLeft: "280px" }}>
-                <div style={{ position: "fixed", width: `${vw - 280}px`, zIndex: 30 }}>
-                    <Header pageName="Materijal" />
-                </div>
-                <div className='RestOfScreen' style={{ paddingTop: "72px" }}>
+            <Navbar />
+            <div className="main-content">
+                <Header pageName="Materijal" />
+                <div className='RestOfScreen'>
                     <div className="grid grid-cols-1 gap-6">
                         <Container headline="➕ Novi materijal">
                             <NewMaterialForm />

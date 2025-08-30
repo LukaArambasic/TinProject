@@ -9,6 +9,7 @@
   border-right: 1px solid var(--border-color);
   box-shadow: var(--shadow-lg);
   overflow-y: auto;
+  position: relative;
 }
 
 .navbarTitle {
