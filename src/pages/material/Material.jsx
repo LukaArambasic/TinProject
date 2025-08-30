@@ -4,29 +4,28 @@ import '../../App.css';
 import Header from "../../components/header/Header";
 import AttributeValues from "../../components/attributeValues/AttributeValues";
 import AttributeHeadline from "../../components/attributeHeadline/AttributeHeadline";
-import axios from "axios";
 import NewItem from "../../components/newItem/NewItem";
 import Container from "../../components/container/Container";
 import Navbar from "../../components/navbar/Navbar";
 
-const NewItemLocal = () => {
+const NewMaterialForm = () => {
     const titles = [
         {
             title: "name",
             type: "text",
-            displayedTitle: "Naziv",
+            displayedTitle: "Naziv materijala",
             advanced: false,
         },
         {
             title: "costPerUnit",
             type: "text",
-            displayedTitle: "Cijena po mjernoj jedinici:",
+            displayedTitle: "Cijena po mjernoj jedinici (€)",
             advanced: false,
         },
         {
             title: "stock",
             type: "text",
-            displayedTitle: "Količina na stanju",
+            displayedTitle: "Početna količina na stanju",
             advanced: false,
         },
     ]
@@ -37,46 +36,42 @@ const NewItemLocal = () => {
         const item = {
             name: e.target.name.value,
             stock: e.target.stock.value,
-            costPerUnit: e.target.costPerUnit.value,
+            costPerUnit: parseFloat(e.target.costPerUnit.value).toFixed(2),
         }
 
-        const oldData = JSON.parse(localStorage.getItem('material'));
-
-        if (oldData===null) {
-            localStorage.setItem('material', JSON.stringify([item]));
-        }
+        const oldData = JSON.parse(localStorage.getItem('material')) || [];
         const newData = [...oldData, item];
         localStorage.setItem('material', JSON.stringify(newData));
-        console.log(localStorage);
-
+        
+        // Reset form
+        e.target.reset();
+        window.location.reload();
     }
 
-    return (
-        <NewItem titles={titles} onSubmit={onSubmit}/>
-    )
+    return <NewItem titles={titles} onSubmit={onSubmit} />
 }
-const NewItemLocal2 = () => {
+
+const PurchaseMaterialForm = () => {
     const [selectData, setSelectData] = useState([]);
-    // const data = useGetAll("belt");
     const data = localStorage.getItem("material");
 
-    useEffect(()=>{
-        const refinedData = JSON.parse(data);
+    useEffect(() => {
+        const refinedData = JSON.parse(data) || [];
         setSelectData(refinedData);
-    },[]);
+    }, []);
 
     const titles = [
         {
             title: "material",
             type: "select",
-            displayedTitle: "Materijal",
+            displayedTitle: "Odaberite materijal",
             advanced: false,
             data: selectData,
         },
         {
             title: "quantity",
             type: "text",
-            displayedTitle: "Kupljena količina materijala",
+            displayedTitle: "Kupljena količina",
             advanced: false,
         },
     ]
@@ -84,40 +79,32 @@ const NewItemLocal2 = () => {
     const onSubmit = (e) => {
         e.preventDefault();
 
-        selectData.forEach(item => {
-            if (item.name===e.target.material.value) {
-
-                item.stock = parseInt(item.stock) + parseInt(e.target.quantity.value);
+        const updatedData = selectData.map(item => {
+            if (item.name === e.target.material.value) {
+                return {
+                    ...item,
+                    stock: parseInt(item.stock) + parseInt(e.target.quantity.value)
+                };
             }
+            return item;
         });
-        console.log(selectData);
 
-        localStorage.setItem('material', JSON.stringify(selectData));
-
-        
-
-        
-
+        localStorage.setItem('material', JSON.stringify(updatedData));
+        e.target.reset();
+        window.location.reload();
     }
 
-    return (
-        <NewItem titles={titles} onSubmit={onSubmit}/>
-    )
+    return <NewItem titles={titles} onSubmit={onSubmit} />
 }
 
-const AllItemsLocal = () => {
+const MaterialList = () => {
     const [sortedData, setSortedData] = useState([]);
-    // const data = useGetAll("member");
     const data = localStorage.getItem('material');
 
-    useEffect(()=>{
-        if (data===null) {
-            localStorage.setItem('material',JSON.stringify([]));
-            data = [];
-        }
-        const refinedData = JSON.parse(data);
+    useEffect(() => {
+        const refinedData = JSON.parse(data) || [];
         setSortedData(refinedData);
-    },[]);
+    }, []);
 
     const headlineArray = [
         {
@@ -130,49 +117,73 @@ const AllItemsLocal = () => {
         },
         {
             title: "costPerUnit",
-            displayedTitle: "Cijena / mj. jed.",
+            displayedTitle: "Cijena / mj. jed. (€)",
         },
     ]
 
+    if (sortedData.length === 0) {
+        return (
+            <div className="flex items-center justify-center p-8">
+                <div className="text-center">
+                    <p className="text-muted mb-4">Nema dodanih materijala</p>
+                    <p className="text-sm text-muted">Dodajte novi materijal da biste ga vidjeli ovdje</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
-        <div style={{width: "100%"}}>
-            <AttributeHeadline headlineArray={headlineArray} data={sortedData} setData={setSortedData}/>
-            {sortedData.map(item => (
-                <AttributeValues name={'material'} item={item} key={item.name} headlineArray={headlineArray}/>
+        <div style={{ width: "100%" }}>
+            <AttributeHeadline headlineArray={headlineArray} data={sortedData} setData={setSortedData} />
+            {sortedData.map((item, index) => (
+                <AttributeValues 
+                    name={'material'} 
+                    item={item} 
+                    key={`${item.name}-${index}`} 
+                    headlineArray={headlineArray}
+                />
             ))}
         </div>
-    )
+    );
 }
-
 
 const Material = () => {
     const [vw, setVw] = useState(window.innerWidth);
-    const handleResize = () => {
-        const viewportWidth = window.innerWidth;
-        setVw(viewportWidth);
-    };
     
-    // Attach the event listener
-    window.addEventListener('resize', handleResize);
+    useEffect(() => {
+        const handleResize = () => {
+            setVw(window.innerWidth);
+        };
+        
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
-  return (
-    <div className='App FlexRow'>
-        <div style={{ position: 'fixed'}}>
-            <Navbar />
-        </div>
-        <div style={{flex: 1, marginLeft: "240px"}}>
-            <div style={{position: "fixed", width: `${vw-240}px`}}>
-                <Header pageName="Materijal"/>
+    return (
+        <div className='App FlexRow'>
+            <div style={{ position: 'fixed', zIndex: 40 }}>
+                <Navbar />
             </div>
-            <div className='RestOfScreen' style={{paddingTop: "72px"}}>
-                <Container children={<NewItemLocal />} headline="Novi materijal" />
-                <Container children={<NewItemLocal2 />} headline="Nabavka materijala" />
-                <Container children={<AllItemsLocal />} headline="Svi materijali" />
+            <div style={{ flex: 1, marginLeft: "280px" }}>
+                <div style={{ position: "fixed", width: `${vw - 280}px`, zIndex: 30 }}>
+                    <Header pageName="Materijal" />
+                </div>
+                <div className='RestOfScreen' style={{ paddingTop: "72px" }}>
+                    <div className="grid grid-cols-1 gap-6">
+                        <Container headline="➕ Novi materijal">
+                            <NewMaterialForm />
+                        </Container>
+                        <Container headline="📦 Nabavka materijala">
+                            <PurchaseMaterialForm />
+                        </Container>
+                        <Container headline="📋 Svi materijali">
+                            <MaterialList />
+                        </Container>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-  );
-
+    );
 }
 
 export default Material;

@@ -1,23 +1,84 @@
-
 .customContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    border-radius: 8px;
-    background-color: var(--primary-color); /* Adjust the background color as needed */
-    margin: 32px;
-    padding: 16px; /* Adjust the padding as needed */
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-xl);
+  margin-bottom: var(--spacing-8);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.customContainer:hover {
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  transform: translateY(-2px);
+}
+
+.containerHeadline {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  padding: var(--spacing-6);
+  background: linear-gradient(135deg, var(--secondary-color), var(--surface-color));
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.containerHeadline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.05), transparent);
+  transition: left 0.5s ease;
+}
+
+.containerHeadline:hover {
+  background: linear-gradient(135deg, var(--surface-hover), var(--secondary-color));
+}
+
+.containerHeadline:hover::before {
+  left: 100%;
+}
+
+.containerContent {
+  padding: var(--spacing-6);
+  background-color: var(--surface-color);
+}
+
+.expandIcon {
+  font-size: var(--font-size-sm);
+  color: var(--accent-color);
+  transition: all 0.3s ease;
+  margin-left: var(--spacing-2);
+}
+
+.containerHeadline:hover .expandIcon {
+  color: var(--success-color);
+  transform: scale(1.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .customContainer {
+    margin-bottom: var(--spacing-6);
+    border-radius: var(--border-radius-lg);
   }
   
   .containerHeadline {
-    font-size: var(--font-size-headline-1);
-    font-weight: var(--font-weight-headline-1);
-    color: var(--text-color);
-    margin-bottom: 16px; /* Add margin below the headline */
+    font-size: var(--font-size-lg);
+    padding: var(--spacing-4);
   }
   
-
-
-
-
-
+  .containerContent {
+    padding: var(--spacing-4);
+  }
+}

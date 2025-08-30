@@ -1,12 +1,25 @@
 import React, { useState } from 'react';
-import './Container.css'; // Import your styles
+import './Container.css';
 
 const Container = ({ headline, children }) => {
   const [childrenVisible, setChildrenVisible] = useState(true);
+  
   return (
     <div className="customContainer">
-      <div className="containerHeadline" onClick={() => setChildrenVisible(!childrenVisible)}>{headline}{childrenVisible?<>&#9652;</>:<>&#9662;</>}</div>
-      {childrenVisible && children}
+      <div 
+        className="containerHeadline" 
+        onClick={() => setChildrenVisible(!childrenVisible)}
+      >
+        <span>{headline}</span>
+        <span className="expandIcon">
+          {childrenVisible ? '▲' : '▼'}
+        </span>
+      </div>
+      {childrenVisible && (
+        <div className="containerContent animate-fade-in">
+          {children}
+        </div>
+      )}
     </div>
   );
 };

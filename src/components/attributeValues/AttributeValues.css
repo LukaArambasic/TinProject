@@ -1,15 +1,114 @@
-
 .postContainer {
-    display: flex;
-    justify-content: space-between;
-    background-color: var(--secondary-color);
-    border-radius: 8px;
-    align-items: center;
-    margin-bottom: 8px;
-    /* padding: 8px; */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  margin-bottom: var(--spacing-3);
+  padding: var(--spacing-4);
+  transition: all 0.2s ease;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.postContainer:hover {
+  background-color: var(--surface-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--accent-color);
+}
+
+.postContent {
+  display: flex;
+  gap: var(--spacing-2);
+  flex: 1;
+}
+
+.attributeValueItem {
+  flex: 1;
+  min-width: 150px;
+  padding: var(--spacing-2) var(--spacing-3);
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.attributeValueItem.highlighted {
+  color: var(--error-color);
+  font-weight: var(--font-weight-bold);
+  background-color: rgba(239, 68, 68, 0.1);
+  border-radius: var(--border-radius);
+  border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
 .buttonContainerPost {
-    padding: 8px;
+  display: flex;
+  gap: var(--spacing-2);
+  align-items: center;
 }
 
+.actionButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--border-radius);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: transparent;
+}
+
+.deleteButton {
+  color: var(--error-color);
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.deleteButton:hover {
+  background-color: var(--error-color);
+  color: white;
+  transform: scale(1.05);
+  box-shadow: var(--shadow);
+}
+
+.editButton {
+  color: var(--accent-color);
+  background-color: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.editButton:hover {
+  background-color: var(--accent-color);
+  color: white;
+  transform: scale(1.05);
+  box-shadow: var(--shadow);
+}
+
+@media (max-width: 768px) {
+  .postContainer {
+    flex-direction: column;
+    gap: var(--spacing-3);
+    padding: var(--spacing-3);
+  }
+  
+  .postContent {
+    width: 100%;
+    flex-direction: column;
+    gap: var(--spacing-2);
+  }
+  
+  .attributeValueItem {
+    min-width: auto;
+    padding: var(--spacing-2);
+    background-color: var(--secondary-color);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+  }
+  
+  .buttonContainerPost {
+    width: 100%;
+    justify-content: center;
+  }
+}

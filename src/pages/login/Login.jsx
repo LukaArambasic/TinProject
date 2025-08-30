@@ -7,43 +7,74 @@ const Login = () => {
     const navigate = useNavigate();
     const [username, setUsername] = useState('tin');
     const [password, setPassword] = useState('pederčina');
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
+        setIsLoading(true);
         
-        // Convert the username to lowercase for case-insensitive comparison
+        // Simulate loading for better UX
+        await new Promise(resolve => setTimeout(resolve, 800));
+        
         const lowercaseUsername = username.toLowerCase();
         
-        // Check if the username is "Tin" and the password is "gay"
         if (lowercaseUsername === 'tin' && password === 'pederčina') {
-            console.log("Login successful!");
-            // Redirect the user or perform any other actions for successful login
-            navigate("/home")
+            navigate("/home");
         } else {
-            console.log("Invalid username or password");
-            // Display an error message to the user or perform any other actions for failed login
+            alert("Neispravno korisničko ime ili lozinka");
         }
-
-
+        
+        setIsLoading(false);
     };
 
     return (
-        <div className='App FlexRow' style={{ width: "100%" }}>
-            <div style={{ position: "fixed", width: "100%" }}>
-                <Header pageName="Login" />
-            </div>
-            <div className='RestOfScreen' style={{ paddingTop: "72px", width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
-                <form onSubmit={handleSubmit} style={{ width: "300px" }}>
-                    <div style={{ marginBottom: "15px" }}>
-                        <label htmlFor="username">Username:</label>
-                        <input type="text" id="username" name="username" value={username} onChange={(e) => setUsername(e.target.value)} />
+        <div className='App min-h-screen'>
+            <Header pageName="Prijava" />
+            <div className='flex items-center justify-center min-h-screen' style={{ paddingTop: "72px" }}>
+                <div className="card" style={{ width: "400px", maxWidth: "90vw" }}>
+                    <div className="text-center mb-6">
+                        <h1 className="headline-1">Dobrodošli</h1>
+                        <p className="text-muted">Prijavite se u svoj račun</p>
                     </div>
-                    <div style={{ marginBottom: "15px" }}>
-                        <label htmlFor="password">Password:</label>
-                        <input type="password" id="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                    </div>
-                    <button type="submit">Login</button>
-                </form>
+                    
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+                        <div className="form-group">
+                            <label htmlFor="username" className="form-label">Korisničko ime</label>
+                            <input 
+                                type="text" 
+                                id="username" 
+                                name="username" 
+                                value={username} 
+                                onChange={(e) => setUsername(e.target.value)}
+                                className="form-input"
+                                placeholder="Unesite korisničko ime"
+                                required
+                            />
+                        </div>
+                        
+                        <div className="form-group">
+                            <label htmlFor="password" className="form-label">Lozinka</label>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                value={password} 
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="form-input"
+                                placeholder="Unesite lozinku"
+                                required
+                            />
+                        </div>
+                        
+                        <button 
+                            type="submit" 
+                            className="btn btn-primary btn-lg w-full"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? 'Prijavljivanje...' : 'Prijavite se'}
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     );
