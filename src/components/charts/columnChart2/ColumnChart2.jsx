@@ -2,11 +2,38 @@ import React from 'react';
 import { Bar } from 'react-chartjs-2';
 
 const MonthlyProfitChart = ({ sales }) => {
+  // Get materials and products data for cost calculation
+  const materials = JSON.parse(localStorage.getItem('material')) || [];
+  const products = JSON.parse(localStorage.getItem('product')) || [];
+
+  // Calculate actual profit for each sale
+  const calculateActualProfit = (sale) => {
+    const product = products.find(p => p.name === sale.product);
+    if (!product || !product.materials) {
+      return parseFloat(sale.profit); // Return original profit if no materials data
+    }
+
+    // Calculate material costs for this sale
+    let materialCosts = 0;
+    product.materials.forEach(materialUsed => {
+      const material = materials.find(m => m.name === materialUsed.material);
+      if (material) {
+        const costPerUnit = parseFloat(material.costPerUnit);
+        const unitsUsed = parseFloat(materialUsed.unit) * parseInt(sale.quantity);
+        materialCosts += costPerUnit * unitsUsed;
+      }
+    });
+
+    // Actual profit = sales revenue - material costs
+    const salesRevenue = parseFloat(sale.profit);
+    return salesRevenue - materialCosts;
+  };
+
   // Aggregate profits by month
   const monthlyData = sales.reduce((acc, sale) => {
     const date = new Date(sale.date);
     const monthYear = `${date.getMonth() + 1}/${date.getFullYear()}`;
-    acc[monthYear] = (acc[monthYear] || 0) + sale.profit;
+    acc[monthYear] = (acc[monthYear] || 0) + calculateActualProfit(sale);
     return acc;
   }, {});
 
