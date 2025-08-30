@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import './MaterialCard.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashCan, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faTrashCan, faPlus, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 
-const MaterialCard = ({ material, onDelete, onSupply }) => {
+const MaterialCard = ({ material, onEdit, onDelete, onSupply }) => {
   const [supplyAmount, setSupplyAmount] = useState('');
 
   const handleDelete = () => {
@@ -32,6 +32,13 @@ const MaterialCard = ({ material, onDelete, onSupply }) => {
       <div className="material-header">
         <h3 className="material-name">{material.name}</h3>
         <div className="material-actions">
+          <button 
+            className="action-btn edit-btn" 
+            onClick={() => onEdit(material)}
+            title="Uredi materijal"
+          >
+            <FontAwesomeIcon icon={faPenToSquare} />
+          </button>
           <button 
             className="action-btn delete-btn" 
             onClick={handleDelete}
