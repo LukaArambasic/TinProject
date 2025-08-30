@@ -22,7 +22,7 @@ const MaterialStockChart = () => {
             }));
             setSelectData(processedData);
         }
-    }, [data]);
+    }, []);
 
     if (selectData.length === 0) {
         return (
@@ -56,7 +56,7 @@ const SalesChart = () => {
             }));
             setSortedData(processedData);
         }
-    }, [data]);
+    }, [data.length]);
 
     if (sortedData.length === 0) {
         return (
