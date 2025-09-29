@@ -1,10 +1,40 @@
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
+import apiService from '../../../services/api';
 
 const MonthlyProfitChart = ({ sales }) => {
-  // Get materials and products data for cost calculation
-  const materials = JSON.parse(localStorage.getItem('material')) || [];
-  const products = JSON.parse(localStorage.getItem('product')) || [];
+  const [materials, setMaterials] = React.useState([]);
+  const [products, setProducts] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [materialsData, productsData] = await Promise.all([
+          apiService.getMaterials(),
+          apiService.getProducts()
+        ]);
+        setMaterials(materialsData);
+        setProducts(productsData);
+      } catch (err) {
+        console.error('Error loading data for chart:', err);
+        setMaterials([]);
+        setProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div style={{ height: '400px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <p style={{ color: '#94a3b8' }}>Učitavanje podataka...</p>
+      </div>
+    );
+  }
 
   // Calculate actual profit for each sale
   const calculateActualProfit = (sale) => {

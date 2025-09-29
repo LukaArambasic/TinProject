@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './SaleForm.css';
+import apiService from '../../services/api';
 
 const SaleForm = ({ sale, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
@@ -23,10 +24,22 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
   }, [sale]);
 
   useEffect(() => {
-    const products = JSON.parse(localStorage.getItem('product')) || [];
-    const materialsData = JSON.parse(localStorage.getItem('material')) || [];
-    setAvailableProducts(products);
-    setMaterials(materialsData);
+    const loadData = async () => {
+      try {
+        const [products, materialsData] = await Promise.all([
+          apiService.getProducts(),
+          apiService.getMaterials()
+        ]);
+        setAvailableProducts(products);
+        setMaterials(materialsData);
+      } catch (err) {
+        console.error('Error loading data:', err);
+        setAvailableProducts([]);
+        setMaterials([]);
+      }
+    };
+    
+    loadData();
   }, []);
 
   useEffect(() => {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './ProductForm.css';
+import apiService from '../../services/api';
 
 const ProductForm = ({ product, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
@@ -11,8 +12,17 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
   const [availableMaterials, setAvailableMaterials] = useState([]);
 
   useEffect(() => {
-    const materials = JSON.parse(localStorage.getItem('material')) || [];
-    setAvailableMaterials(materials);
+    const loadMaterials = async () => {
+      try {
+        const materials = await apiService.getMaterials();
+        setAvailableMaterials(materials);
+      } catch (err) {
+        console.error('Error loading materials:', err);
+        setAvailableMaterials([]);
+      }
+    };
+    
+    loadMaterials();
 
     if (product) {
       setFormData({

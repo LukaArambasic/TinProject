@@ -33,11 +33,11 @@ const ProductCard = ({ product, onEdit, onDelete }) => {
       <div className="product-details">
         <div className="product-detail">
           <span className="detail-label">Prodajna cijena</span>
-          <span className="detail-value price-value">€{product.pricePerUnit}</span>
+          <span className="detail-value price-value">€{product.price_per_unit || product.pricePerUnit}</span>
         </div>
         <div className="product-detail">
           <span className="detail-label">Vrijeme izrade</span>
-          <span className="detail-value time-value">{product.timeToMake} min</span>
+          <span className="detail-value time-value">{product.time_to_make || product.timeToMake} min</span>
         </div>
       </div>
       

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import './Sales.css';
 import '../../App.css';
+import apiService from '../../services/api';
 import Header from "../../components/header/Header";
 import Container from "../../components/container/Container";
 import Navbar from "../../components/navbar/Navbar";
@@ -10,6 +11,8 @@ import SaleForm from "../../components/saleForm/SaleForm";
 
 const Sales = () => {
     const [sales, setSales] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingSale, setEditingSale] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
@@ -18,9 +21,18 @@ const Sales = () => {
         loadSales();
     }, []);
 
-    const loadSales = () => {
-        const data = JSON.parse(localStorage.getItem('sale')) || [];
-        setSales(data);
+    const loadSales = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            const data = await apiService.getSales();
+            setSales(data);
+        } catch (err) {
+            setError('Greška pri dohvaćanju prodaja');
+            console.error('Error loading sales:', err);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleCreateSale = () => {
@@ -33,96 +45,36 @@ const Sales = () => {
         setIsModalOpen(true);
     };
 
-    const handleDeleteSale = (saleToDelete) => {
-        // First, restore materials to stock when deleting a sale
-        const materials = JSON.parse(localStorage.getItem('material')) || [];
-        const products = JSON.parse(localStorage.getItem('product')) || [];
-        
-        const soldProduct = products.find(p => p.name === saleToDelete.product);
-        if (soldProduct && soldProduct.materials) {
-            const updatedMaterials = materials.map(material => {
-                const requiredMaterial = soldProduct.materials.find(rm => rm.material === material.name);
-                if (requiredMaterial) {
-                    const usedAmount = parseFloat(requiredMaterial.unit) * parseInt(saleToDelete.quantity);
-                    return {
-                        ...material,
-                        stock: parseInt(material.stock) + usedAmount
-                    };
-                }
-                return material;
-            });
-            localStorage.setItem('material', JSON.stringify(updatedMaterials));
+    const handleDeleteSale = async (saleToDelete) => {
+        try {
+            await apiService.deleteSale(saleToDelete.id);
+            setSales(sales.filter(sale => sale.id !== saleToDelete.id));
+        } catch (err) {
+            alert('Greška pri brisanju prodaje');
+            console.error('Error deleting sale:', err);
         }
-        
-        const updatedSales = sales.filter(sale => 
-            JSON.stringify(sale) !== JSON.stringify(saleToDelete)
-        );
-        localStorage.setItem('sale', JSON.stringify(updatedSales));
-        setSales(updatedSales);
     };
 
-    const handleSubmitSale = (saleData) => {
-        // Get current materials and products
-        const materials = JSON.parse(localStorage.getItem('material')) || [];
-        const products = JSON.parse(localStorage.getItem('product')) || [];
-        
-        const selectedProduct = products.find(p => p.name === saleData.product);
-        if (!selectedProduct) {
-            alert("Proizvod nije pronađen");
-            return;
-        }
-
-        let updatedSales;
-        let updatedMaterials = [...materials];
-        
-        if (editingSale) {
-            // When editing, first restore materials from the old sale
-            const oldProduct = products.find(p => p.name === editingSale.product);
-            if (oldProduct && oldProduct.materials) {
-                updatedMaterials = updatedMaterials.map(material => {
-                    const requiredMaterial = oldProduct.materials.find(rm => rm.material === material.name);
-                    if (requiredMaterial) {
-                        const usedAmount = parseFloat(requiredMaterial.unit) * parseInt(editingSale.quantity);
-                        return {
-                            ...material,
-                            stock: parseInt(material.stock) + usedAmount
-                        };
-                    }
-                    return material;
-                });
+    const handleSubmitSale = async (saleData) => {
+        try {
+            if (editingSale) {
+                // Update existing sale
+                const updatedSale = await apiService.updateSale(editingSale.id, saleData);
+                setSales(sales.map(sale => 
+                    sale.id === editingSale.id ? updatedSale : sale
+                ));
+            } else {
+                // Add new sale
+                const newSale = await apiService.createSale(saleData);
+                setSales([...sales, newSale]);
             }
             
-            // Update existing sale
-            updatedSales = sales.map(sale => 
-                JSON.stringify(sale) === JSON.stringify(editingSale) 
-                    ? saleData 
-                    : sale
-            );
-        } else {
-            // Add new sale
-            updatedSales = [...sales, saleData];
+            setIsModalOpen(false);
+            setEditingSale(null);
+        } catch (err) {
+            alert('Greška pri spremanju prodaje');
+            console.error('Error saving sale:', err);
         }
-        
-        // Subtract materials for the new/updated sale
-        const requiredMaterials = selectedProduct.materials || [];
-        updatedMaterials = updatedMaterials.map(material => {
-            const requiredMaterial = requiredMaterials.find(rm => rm.material === material.name);
-            if (requiredMaterial) {
-                const usedAmount = parseFloat(requiredMaterial.unit) * parseInt(saleData.quantity);
-                return {
-                    ...material,
-                    stock: parseInt(material.stock) - usedAmount
-                };
-            }
-            return material;
-        });
-        
-        // Update both materials and sales in localStorage
-        localStorage.setItem('material', JSON.stringify(updatedMaterials));
-        localStorage.setItem('sale', JSON.stringify(updatedSales));
-        setSales(updatedSales);
-        setIsModalOpen(false);
-        setEditingSale(null);
     };
 
     const handleCloseModal = () => {
@@ -144,6 +96,18 @@ const Sales = () => {
                 <Header pageName="Prodaja" />
                 <div className='RestOfScreen'>
                     <Container headline="💳 Upravljanje prodajama">
+                        {error && (
+                            <div className="error-message mb-4">
+                                {error}
+                            </div>
+                        )}
+                        
+                        {loading ? (
+                            <div className="flex items-center justify-center p-8">
+                                <p className="text-muted">Učitavanje prodaja...</p>
+                            </div>
+                        ) : (
+                        <>
                         <div className="sales-header">
                             <div className="search-container">
                                 <div className="search-input-wrapper">
@@ -213,6 +177,8 @@ const Sales = () => {
                                     />
                                 ))}
                             </div>
+                        )}
+                        </>
                         )}
                     </Container>
                 </div>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import './Material.css';
 import '../../App.css';
+import apiService from '../../services/api';
 import Header from "../../components/header/Header";
 import Container from "../../components/container/Container";
 import Navbar from "../../components/navbar/Navbar";
@@ -10,6 +11,8 @@ import MaterialForm from "../../components/materialForm/MaterialForm";
 
 const Material = () => {
     const [materials, setMaterials] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingMaterial, setEditingMaterial] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
@@ -18,9 +21,18 @@ const Material = () => {
         loadMaterials();
     }, []);
 
-    const loadMaterials = () => {
-        const data = JSON.parse(localStorage.getItem('material')) || [];
-        setMaterials(data);
+    const loadMaterials = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            const data = await apiService.getMaterials();
+            setMaterials(data);
+        } catch (err) {
+            setError('Greška pri dohvaćanju materijala');
+            console.error('Error loading materials:', err);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleCreateMaterial = () => {
@@ -33,48 +45,53 @@ const Material = () => {
         setIsModalOpen(true);
     };
 
-    const handleDeleteMaterial = (materialToDelete) => {
-        const updatedMaterials = materials.filter(material => 
-            JSON.stringify(material) !== JSON.stringify(materialToDelete)
-        );
-        localStorage.setItem('material', JSON.stringify(updatedMaterials));
-        setMaterials(updatedMaterials);
-    };
-
-    const handleSupplyMaterial = (materialToSupply, amount) => {
-        const updatedMaterials = materials.map(material => {
-            if (JSON.stringify(material) === JSON.stringify(materialToSupply)) {
-                return {
-                    ...material,
-                    stock: parseInt(material.stock) + amount
-                };
-            }
-            return material;
-        });
-        
-        localStorage.setItem('material', JSON.stringify(updatedMaterials));
-        setMaterials(updatedMaterials);
-    };
-
-    const handleSubmitMaterial = (materialData) => {
-        let updatedMaterials;
-        
-        if (editingMaterial) {
-            // Update existing material
-            updatedMaterials = materials.map(material => 
-                JSON.stringify(material) === JSON.stringify(editingMaterial) 
-                    ? materialData 
-                    : material
-            );
-        } else {
-            // Add new material
-            updatedMaterials = [...materials, materialData];
+    const handleDeleteMaterial = async (materialToDelete) => {
+        try {
+            await apiService.deleteMaterial(materialToDelete.id);
+            setMaterials(materials.filter(material => material.id !== materialToDelete.id));
+        } catch (err) {
+            alert('Greška pri brisanju materijala');
+            console.error('Error deleting material:', err);
         }
-        
-        localStorage.setItem('material', JSON.stringify(updatedMaterials));
-        setMaterials(updatedMaterials);
-        setIsModalOpen(false);
-        setEditingMaterial(null);
+    };
+
+    const handleSupplyMaterial = async (materialToSupply, amount) => {
+        try {
+            const updatedMaterial = {
+                ...materialToSupply,
+                stock: parseInt(materialToSupply.stock) + amount
+            };
+            
+            await apiService.updateMaterial(materialToSupply.id, updatedMaterial);
+            setMaterials(materials.map(material => 
+                material.id === materialToSupply.id ? updatedMaterial : material
+            ));
+        } catch (err) {
+            alert('Greška pri ažuriranju zaliha');
+            console.error('Error updating material stock:', err);
+        }
+    };
+
+    const handleSubmitMaterial = async (materialData) => {
+        try {
+            if (editingMaterial) {
+                // Update existing material
+                const updatedMaterial = await apiService.updateMaterial(editingMaterial.id, materialData);
+                setMaterials(materials.map(material => 
+                    material.id === editingMaterial.id ? updatedMaterial : material
+                ));
+            } else {
+                // Add new material
+                const newMaterial = await apiService.createMaterial(materialData);
+                setMaterials([...materials, newMaterial]);
+            }
+            
+            setIsModalOpen(false);
+            setEditingMaterial(null);
+        } catch (err) {
+            alert('Greška pri spremanju materijala');
+            console.error('Error saving material:', err);
+        }
     };
 
     const handleCloseModal = () => {
@@ -93,6 +110,18 @@ const Material = () => {
                 <Header pageName="Materijali" />
                 <div className='RestOfScreen'>
                     <Container headline="📦 Upravljanje materijalima">
+                        {error && (
+                            <div className="error-message mb-4">
+                                {error}
+                            </div>
+                        )}
+                        
+                        {loading ? (
+                            <div className="flex items-center justify-center p-8">
+                                <p className="text-muted">Učitavanje materijala...</p>
+                            </div>
+                        ) : (
+                        <>
                         <div className="materials-header">
                             <div className="search-container">
                                 <div className="search-input-wrapper">
@@ -157,6 +186,8 @@ const Material = () => {
                                     />
                                 ))}
                             </div>
+                        )}
+                        </>
                         )}
                     </Container>
                 </div>

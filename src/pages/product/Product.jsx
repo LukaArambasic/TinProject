@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import './Product.css';
 import '../../App.css';
+import apiService from '../../services/api';
 import Header from "../../components/header/Header";
 import Container from "../../components/container/Container";
 import Navbar from "../../components/navbar/Navbar";
@@ -9,8 +10,9 @@ import ProductCard from "../../components/productCard/ProductCard";
 import ProductForm from "../../components/productForm/ProductForm";
 
 const Product = () => {
-    const [vw, setVw] = useState(window.innerWidth);
     const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
@@ -19,9 +21,18 @@ const Product = () => {
         loadProducts();
     }, []);
 
-    const loadProducts = () => {
-        const data = JSON.parse(localStorage.getItem('product')) || [];
-        setProducts(data);
+    const loadProducts = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            const data = await apiService.getProducts();
+            setProducts(data);
+        } catch (err) {
+            setError('Greška pri dohvaćanju proizvoda');
+            console.error('Error loading products:', err);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleCreateProduct = () => {
@@ -34,33 +45,36 @@ const Product = () => {
         setIsModalOpen(true);
     };
 
-    const handleDeleteProduct = (productToDelete) => {
-        const updatedProducts = products.filter(product => 
-            JSON.stringify(product) !== JSON.stringify(productToDelete)
-        );
-        localStorage.setItem('product', JSON.stringify(updatedProducts));
-        setProducts(updatedProducts);
+    const handleDeleteProduct = async (productToDelete) => {
+        try {
+            await apiService.deleteProduct(productToDelete.id);
+            setProducts(products.filter(product => product.id !== productToDelete.id));
+        } catch (err) {
+            alert('Greška pri brisanju proizvoda');
+            console.error('Error deleting product:', err);
+        }
     };
 
-    const handleSubmitProduct = (productData) => {
-        let updatedProducts;
-        
-        if (editingProduct) {
-            // Update existing product
-            updatedProducts = products.map(product => 
-                JSON.stringify(product) === JSON.stringify(editingProduct) 
-                    ? productData 
-                    : product
-            );
-        } else {
-            // Add new product
-            updatedProducts = [...products, productData];
+    const handleSubmitProduct = async (productData) => {
+        try {
+            if (editingProduct) {
+                // Update existing product
+                const updatedProduct = await apiService.updateProduct(editingProduct.id, productData);
+                setProducts(products.map(product => 
+                    product.id === editingProduct.id ? updatedProduct : product
+                ));
+            } else {
+                // Add new product
+                const newProduct = await apiService.createProduct(productData);
+                setProducts([...products, newProduct]);
+            }
+            
+            setIsModalOpen(false);
+            setEditingProduct(null);
+        } catch (err) {
+            alert('Greška pri spremanju proizvoda');
+            console.error('Error saving product:', err);
         }
-        
-        localStorage.setItem('product', JSON.stringify(updatedProducts));
-        setProducts(updatedProducts);
-        setIsModalOpen(false);
-        setEditingProduct(null);
     };
 
     const handleCloseModal = () => {
@@ -79,6 +93,18 @@ const Product = () => {
                 <Header pageName="Proizvodi" />
                 <div className='RestOfScreen'>
                     <Container headline="🔧 Upravljanje proizvodima">
+                        {error && (
+                            <div className="error-message mb-4">
+                                {error}
+                            </div>
+                        )}
+                        
+                        {loading ? (
+                            <div className="flex items-center justify-center p-8">
+                                <p className="text-muted">Učitavanje proizvoda...</p>
+                            </div>
+                        ) : (
+                        <>
                         <div className="products-header">
                             <div className="search-container">
                                 <div className="search-input-wrapper">
@@ -141,6 +167,8 @@ const Product = () => {
                                     />
                                 ))}
                             </div>
+                        )}
+                        </>
                         )}
                     </Container>
                 </div>
