@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import './Home.css';
 import '../../App.css';
-import apiService from '../services/api';
+import apiService from '../../services/api';
 import Header from "../../components/header/Header";
 import Container from "../../components/container/Container";
 import Navbar from "../../components/navbar/Navbar";
