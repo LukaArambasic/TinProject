@@ -18,19 +18,19 @@
   gap: var(--spacing-4);
 }
 
-.materials-section {
+.assemblies-section {
   border-top: 1px solid var(--border-color);
   padding-top: var(--spacing-6);
 }
 
-.materials-header {
+.assemblies-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: var(--spacing-4);
 }
 
-.materials-title {
+.assemblies-title {
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-semibold);
   color: var(--text-primary);
@@ -39,7 +39,7 @@
   gap: var(--spacing-2);
 }
 
-.add-material-btn {
+.add-assembly-btn {
   background-color: var(--accent-color);
   color: white;
   border: none;
@@ -54,12 +54,12 @@
   gap: var(--spacing-2);
 }
 
-.add-material-btn:hover {
+.add-assembly-btn:hover {
   background-color: var(--accent-hover);
   transform: translateY(-1px);
 }
 
-.material-group {
+.assembly-group {
   background-color: var(--secondary-color);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
@@ -69,20 +69,20 @@
   animation: fadeIn 0.3s ease-out;
 }
 
-.material-group-header {
+.assembly-group-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: var(--spacing-3);
 }
 
-.material-group-title {
+.assembly-group-title {
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
   color: var(--text-primary);
 }
 
-.remove-material-btn {
+.remove-assembly-btn {
   background-color: rgba(239, 68, 68, 0.1);
   color: var(--error-color);
   border: 1px solid rgba(239, 68, 68, 0.2);
@@ -93,7 +93,7 @@
   transition: all 0.2s ease;
 }
 
-.remove-material-btn:hover {
+.remove-assembly-btn:hover {
   background-color: var(--error-color);
   color: white;
 }
@@ -127,7 +127,7 @@
     grid-template-columns: 1fr;
   }
   
-  .materials-header {
+  .assemblies-header {
     flex-direction: column;
     gap: var(--spacing-3);
     align-items: stretch;

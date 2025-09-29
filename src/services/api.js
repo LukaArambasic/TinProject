@@ -112,6 +112,35 @@ class ApiService {
       method: 'DELETE',
     });
   }
+
+  // Product Assembly API methods
+  async getProductAssemblies() {
+    return this.request('/product/assembly/');
+  }
+
+  async getProductAssembly(id) {
+    return this.request(`/product/assembly/${id}/`);
+  }
+
+  async createProductAssembly(assemblyData) {
+    return this.request('/product/assembly/', {
+      method: 'POST',
+      body: JSON.stringify(assemblyData),
+    });
+  }
+
+  async updateProductAssembly(id, assemblyData) {
+    return this.request(`/product/assembly/${id}/`, {
+      method: 'PUT',
+      body: JSON.stringify(assemblyData),
+    });
+  }
+
+  async deleteProductAssembly(id) {
+    return this.request(`/product/assembly/${id}/`, {
+      method: 'DELETE',
+    });
+  }
 }
 
 export default new ApiService();

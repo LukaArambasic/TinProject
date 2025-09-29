@@ -1,7 +1,28 @@
 import React from 'react';
 import './ProductCard.css';
+import apiService from '../../services/api';
 
 const ProductCard = ({ product, onEdit, onDelete }) => {
+  const [assemblies, setAssemblies] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const loadAssemblies = async () => {
+      try {
+        const allAssemblies = await apiService.getProductAssemblies();
+        const productAssemblies = allAssemblies.filter(assembly => assembly.product_id === product.id);
+        setAssemblies(productAssemblies);
+      } catch (err) {
+        console.error('Error loading assemblies:', err);
+        setAssemblies([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadAssemblies();
+  }, [product.id]);
+
   const handleDelete = () => {
     if (window.confirm(`Jeste li sigurni da želite obrisati proizvod "${product.name}"?`)) {
       onDelete(product);
@@ -41,20 +62,26 @@ const ProductCard = ({ product, onEdit, onDelete }) => {
         </div>
       </div>
       
-      {product.materials && product.materials.length > 0 && (
+      {!loading && assemblies.length > 0 && (
         <div className="materials-section">
           <div className="materials-title">
             ⚙️
             Potrebni materijali
           </div>
           <div className="materials-list">
-            {product.materials.map((material, index) => (
+            {assemblies.map((assembly, index) => (
               <div key={index} className="material-tag">
-                <span className="material-name">{material.material}</span>
-                <span className="material-quantity">{material.unit}</span>
+                <span className="material-name">{assembly.material}</span>
+                <span className="material-quantity">{assembly.unit}</span>
               </div>
             ))}
           </div>
+        </div>
+      )}
+      
+      {loading && (
+        <div className="materials-section">
+          <p className="text-muted text-sm">Učitavanje materijala...</p>
         </div>
       )}
     </div>

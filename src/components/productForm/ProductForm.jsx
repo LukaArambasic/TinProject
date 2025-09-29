@@ -7,7 +7,7 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
     name: '',
     production_time: '',
     price: '',
-    materials: [{ material: '', unit: '' }]
+    assemblies: [{ material: '', unit: '' }]
   });
   const [availableMaterials, setAvailableMaterials] = useState([]);
 
@@ -25,14 +25,34 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
     loadMaterials();
 
     if (product) {
-      setFormData({
-        name: product.name || '',
-        production_time: product.production_time || '',
-        price: product.price || '',
-        materials: product.materials && product.materials.length > 0 
-          ? product.materials 
-          : [{ material: '', unit: '' }]
-      });
+      // Load product assemblies for editing
+      const loadProductAssemblies = async () => {
+        try {
+          const assemblies = await apiService.getProductAssemblies();
+          const productAssemblies = assemblies.filter(assembly => assembly.product_id === product.id);
+          const assemblyData = productAssemblies.map(assembly => ({
+            material: assembly.material || '',
+            unit: assembly.unit || ''
+          }));
+          
+          setFormData({
+            name: product.name || '',
+            production_time: product.production_time || '',
+            price: product.price || '',
+            assemblies: assemblyData.length > 0 ? assemblyData : [{ material: '', unit: '' }]
+          });
+        } catch (err) {
+          console.error('Error loading product assemblies:', err);
+          setFormData({
+            name: product.name || '',
+            production_time: product.production_time || '',
+            price: product.price || '',
+            assemblies: [{ material: '', unit: '' }]
+          });
+        }
+      };
+      
+      loadProductAssemblies();
     }
   }, [product]);
 
@@ -43,32 +63,32 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
     }));
   };
 
-  const handleMaterialChange = (index, field, value) => {
+  const handleAssemblyChange = (index, field, value) => {
     setFormData(prev => ({
       ...prev,
-      materials: prev.materials.map((material, i) => 
-        i === index ? { ...material, [field]: value } : material
+      assemblies: prev.assemblies.map((assembly, i) => 
+        i === index ? { ...assembly, [field]: value } : assembly
       )
     }));
   };
 
-  const addMaterial = () => {
+  const addAssembly = () => {
     setFormData(prev => ({
       ...prev,
-      materials: [...prev.materials, { material: '', unit: '' }]
+      assemblies: [...prev.assemblies, { material: '', unit: '' }]
     }));
   };
 
-  const removeMaterial = (index) => {
-    if (formData.materials.length > 1) {
-      setFormData(prev => ({
-        ...prev,
-        materials: prev.materials.filter((_, i) => i !== index)
-      }));
+  const removeAssembly = (index) => {
+    if (formData.assemblies.length > 1) {
+      setFormData({
+        ...formData,
+        assemblies: formData.assemblies.filter((_, i) => i !== index)
+      });
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     // Validation
@@ -87,18 +107,48 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
       return;
     }
 
-    // Filter out empty materials
-    const validMaterials = formData.materials.filter(
-      material => material.material && material.unit
+    // Filter out empty assemblies
+    const validAssemblies = formData.assemblies.filter(
+      assembly => assembly.material && assembly.unit
     );
 
     const productData = {
-      ...formData,
+      name: formData.name,
+      production_time: formData.production_time,
       price: parseFloat(formData.price).toFixed(2),
-      materials: validMaterials
     };
 
-    onSubmit(productData);
+    try {
+      let savedProduct;
+      if (product) {
+        // Update existing product
+        savedProduct = await apiService.updateProduct(product.id, productData);
+        
+        // Delete existing assemblies
+        const existingAssemblies = await apiService.getProductAssemblies();
+        const productAssemblies = existingAssemblies.filter(assembly => assembly.product_id === product.id);
+        for (const assembly of productAssemblies) {
+          await apiService.deleteProductAssembly(assembly.id);
+        }
+      } else {
+        // Create new product
+        savedProduct = await apiService.createProduct(productData);
+      }
+      
+      // Create new assemblies
+      for (const assembly of validAssemblies) {
+        await apiService.createProductAssembly({
+          product_id: savedProduct.id,
+          material: assembly.material,
+          unit: parseFloat(assembly.unit)
+        });
+      }
+      
+      onSubmit(savedProduct);
+    } catch (err) {
+      console.error('Error saving product:', err);
+      alert('Greška pri spremanju proizvoda');
+    }
   };
 
   return (
@@ -147,31 +197,31 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
         </div>
       </div>
 
-      <div className="materials-section">
-        <div className="materials-header">
-          <div className="materials-title">
+      <div className="assemblies-section">
+        <div className="assemblies-header">
+          <div className="assemblies-title">
             ⚙️
             Potrebni materijali
           </div>
           <button
             type="button"
-            className="add-material-btn"
-            onClick={addMaterial}
+            className="add-assembly-btn"
+            onClick={addAssembly}
           >
             ➕
             Dodaj materijal
           </button>
         </div>
 
-        {formData.materials.map((material, index) => (
-          <div key={index} className="material-group">
-            <div className="material-group-header">
-              <span className="material-group-title">Materijal {index + 1}</span>
-              {formData.materials.length > 1 && (
+        {formData.assemblies.map((assembly, index) => (
+          <div key={index} className="assembly-group">
+            <div className="assembly-group-header">
+              <span className="assembly-group-title">Materijal {index + 1}</span>
+              {formData.assemblies.length > 1 && (
                 <button
                   type="button"
-                  className="remove-material-btn"
-                  onClick={() => removeMaterial(index)}
+                  className="remove-assembly-btn"
+                  onClick={() => removeAssembly(index)}
                 >
                   🗑️
                 </button>
@@ -181,8 +231,8 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
               <div className="form-group">
                 <label className="form-label">Materijal</label>
                 <select
-                  value={material.material}
-                  onChange={(e) => handleMaterialChange(index, 'material', e.target.value)}
+                  value={assembly.material}
+                  onChange={(e) => handleAssemblyChange(index, 'material', e.target.value)}
                   className="form-select"
                   required
                 >
@@ -198,8 +248,8 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
                 <label className="form-label">Količina</label>
                 <input
                   type="number"
-                  value={material.unit}
-                  onChange={(e) => handleMaterialChange(index, 'unit', e.target.value)}
+                  value={assembly.unit}
+                  onChange={(e) => handleAssemblyChange(index, 'unit', e.target.value)}
                   className="form-input"
                   placeholder="0"
                   min="0"
