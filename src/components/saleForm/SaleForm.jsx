@@ -51,6 +51,7 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
       setSelectedProduct(null);
       setError('');
     }
+  }, [formData.product_id, availableProducts]);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -60,7 +61,7 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
   };
 
   const validateStock = () => {
-    if (!selectedProduct || !formData.discount) return true;
+    if (!selectedProduct || !formData.quantity) return true;
 
     const requiredMaterials = selectedProduct.materials || [];
     
@@ -71,7 +72,7 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
         return false;
       }
       
-      const requiredAmount = parseFloat(requiredMaterial.unit);
+      const requiredAmount = parseFloat(requiredMaterial.unit) * parseInt(formData.quantity);
       const availableStock = parseInt(materialInStock.stock);
       
       if (availableStock < requiredAmount) {
@@ -85,27 +86,26 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
   };
 
   useEffect(() => {
-    if (selectedProduct && formData.discount >= 0) {
+    if (selectedProduct && formData.quantity) {
       validateStock();
     }
+  }, [selectedProduct, formData.quantity, materials]);
 
   const calculateTotal = () => {
-    if (!selectedProduct) return 0;
-    const basePrice = parseFloat(selectedProduct.price);
-    const discountAmount = (basePrice * parseFloat(formData.discount)) / 100;
-    return (basePrice - discountAmount).toFixed(2);
+    if (!selectedProduct || !formData.quantity) return 0;
+    return (parseFloat(selectedProduct.pricePerUnit) * parseInt(formData.quantity)).toFixed(2);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    if (!formData.product_id) {
+    if (!formData.product) {
       setError('Molimo odaberite proizvod');
       return;
     }
     
-    if (formData.discount < 0 || formData.discount > 100) {
-      setError('Popust mora biti između 0 i 100%');
+    if (!formData.quantity || parseInt(formData.quantity) <= 0) {
+      setError('Molimo unesite valjanu količinu');
       return;
     }
     
@@ -115,8 +115,7 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
 
     const saleData = {
       ...formData,
-      product_id: parseInt(formData.product_id),
-      discount: parseFloat(formData.discount),
+      quantity: parseInt(formData.quantity),
       profit: calculateTotal()
     };
 
@@ -128,34 +127,32 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
       <div className="form-section">
         <div className="form-row">
           <div className="form-group">
-            <label htmlFor="product_id" className="form-label">Proizvod</label>
+            <label htmlFor="product" className="form-label">Proizvod</label>
             <select
-              id="product_id"
-              value={formData.product_id}
-              onChange={(e) => handleInputChange('product_id', e.target.value)}
+              id="product"
+              value={formData.product}
+              onChange={(e) => handleInputChange('product', e.target.value)}
               className="form-select"
               required
             >
               <option value="">-- Odaberite proizvod --</option>
               {availableProducts.map((product, index) => (
-                <option key={index} value={product.id}>
-                  {product.name} (€{product.price})
+                <option key={index} value={product.name}>
+                  {product.name} (€{product.pricePerUnit})
                 </option>
               ))}
             </select>
           </div>
           <div className="form-group">
-            <label htmlFor="discount" className="form-label">Popust (%)</label>
+            <label htmlFor="quantity" className="form-label">Količina</label>
             <input
               type="number"
-              id="discount"
-              value={formData.discount}
-              onChange={(e) => handleInputChange('discount', e.target.value)}
+              id="quantity"
+              value={formData.quantity}
+              onChange={(e) => handleInputChange('quantity', e.target.value)}
               className="form-input"
-              placeholder="0"
-              min="0"
-              max="100"
-              step="0.01"
+              placeholder="1"
+              min="1"
               required
             />
           </div>
@@ -183,12 +180,12 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
         <div className="product-preview">
           <div className="product-preview-header">
             <span className="product-preview-title">{selectedProduct.name}</span>
-            <span className="product-price">€{selectedProduct.price}</span>
+            <span className="product-price">€{selectedProduct.pricePerUnit}/kom</span>
           </div>
           
           {selectedProduct.materials && selectedProduct.materials.length > 0 && (
             <div className="product-materials">
-              <div className="materials-title">Potrebni materijali:</div>
+              <div className="materials-title">Potrebni materijali po komadu:</div>
               <div className="materials-list">
                 {selectedProduct.materials.map((material, index) => (
                   <span key={index} className="material-tag">
@@ -199,18 +196,18 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
             </div>
           )}
           
-          {formData.discount >= 0 && (
+          {formData.quantity > 0 && (
             <div className="sale-summary">
               <div className="summary-row">
-                <span>Osnovna cijena:</span>
-                <span>€{selectedProduct.price}</span>
+                <span>Količina:</span>
+                <span>{formData.quantity} kom</span>
               </div>
               <div className="summary-row">
-                <span>Popust:</span>
-                <span>{formData.discount}%</span>
+                <span>Cijena po komadu:</span>
+                <span>€{selectedProduct.pricePerUnit}</span>
               </div>
               <div className="summary-row">
-                <span>Finalna cijena:</span>
+                <span>Ukupno:</span>
                 <span>€{calculateTotal()}</span>
               </div>
             </div>
