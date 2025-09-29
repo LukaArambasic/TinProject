@@ -101,13 +101,13 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    if (!formData.product_id) {
+    if (!formData.product) {
       setError('Molimo odaberite proizvod');
       return;
     }
     
-    if (formData.discount < 0 || formData.discount > 100) {
-      setError('Popust mora biti između 0 i 100%');
+    if (!formData.quantity || parseInt(formData.quantity) <= 0) {
+      setError('Molimo unesite valjanu količinu');
       return;
     }
     
@@ -117,8 +117,7 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
 
     const saleData = {
       ...formData,
-      product_id: parseInt(formData.product_id),
-      discount: parseFloat(formData.discount),
+      quantity: parseInt(formData.quantity),
       profit: calculateTotal()
     };
 
@@ -130,34 +129,32 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
       <div className="form-section">
         <div className="form-row">
           <div className="form-group">
-            <label htmlFor="product_id" className="form-label">Proizvod</label>
+            <label htmlFor="product" className="form-label">Proizvod</label>
             <select
-              id="product_id"
-              value={formData.product_id}
-              onChange={(e) => handleInputChange('product_id', e.target.value)}
+              id="product"
+              value={formData.product}
+              onChange={(e) => handleInputChange('product', e.target.value)}
               className="form-select"
               required
             >
               <option value="">-- Odaberite proizvod --</option>
               {availableProducts.map((product, index) => (
-                <option key={index} value={product.id}>
-                  {product.name} (€{product.price})
+                <option key={index} value={product.name}>
+                  {product.name} (€{product.pricePerUnit})
                 </option>
               ))}
             </select>
           </div>
           <div className="form-group">
-            <label htmlFor="discount" className="form-label">Popust (%)</label>
+            <label htmlFor="quantity" className="form-label">Količina</label>
             <input
               type="number"
-              id="discount"
-              value={formData.discount}
-              onChange={(e) => handleInputChange('discount', e.target.value)}
+              id="quantity"
+              value={formData.quantity}
+              onChange={(e) => handleInputChange('quantity', e.target.value)}
               className="form-input"
-              placeholder="0"
-              min="0"
-              max="100"
-              step="0.01"
+              placeholder="1"
+              min="1"
               required
             />
           </div>
