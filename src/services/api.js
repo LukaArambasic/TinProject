@@ -115,29 +115,29 @@ class ApiService {
 
   // Product Assembly API methods
   async getProductAssemblies() {
-    return this.request('/product/assembly/');
+    return this.request('/product_assembly/');
   }
 
   async getProductAssembly(id) {
-    return this.request(`/product/assembly/${id}/`);
+    return this.request(`/product_assembly/${id}/`);
   }
 
   async createProductAssembly(assemblyData) {
-    return this.request('/product/assembly/', {
+    return this.request('/product_assembly/', {
       method: 'POST',
       body: JSON.stringify(assemblyData),
     });
   }
 
   async updateProductAssembly(id, assemblyData) {
-    return this.request(`/product/assembly/${id}/`, {
+    return this.request(`/product_assembly/${id}/`, {
       method: 'PUT',
       body: JSON.stringify(assemblyData),
     });
   }
 
   async deleteProductAssembly(id) {
-    return this.request(`/product/assembly/${id}/`, {
+    return this.request(`/product_assembly/${id}/`, {
       method: 'DELETE',
     });
   }
