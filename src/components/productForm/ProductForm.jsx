@@ -7,7 +7,7 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
     name: '',
     production_time: '',
     price: '',
-    assemblies: [{ material: '', unit: '' }]
+    assemblies: [{ material: '', quantity: '' }]
   });
   const [availableMaterials, setAvailableMaterials] = useState([]);
 
@@ -32,14 +32,14 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
           const productAssemblies = assemblies.filter(assembly => assembly.product_id === product.id);
           const assemblyData = productAssemblies.map(assembly => ({
             material: assembly.material || '',
-            unit: assembly.unit || ''
+            quantity: assembly.quantity || ''
           }));
           
           setFormData({
             name: product.name || '',
             production_time: product.production_time || '',
             price: product.price || '',
-            assemblies: assemblyData.length > 0 ? assemblyData : [{ material: '', unit: '' }]
+            assemblies: assemblyData.length > 0 ? assemblyData : [{ material: '', quantity: '' }]
           });
         } catch (err) {
           console.error('Error loading product assemblies:', err);
@@ -47,7 +47,7 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
             name: product.name || '',
             production_time: product.production_time || '',
             price: product.price || '',
-            assemblies: [{ material: '', unit: '' }]
+            assemblies: [{ material: '', quantity: '' }]
           });
         }
       };
@@ -75,7 +75,7 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
   const addAssembly = () => {
     setFormData(prev => ({
       ...prev,
-      assemblies: [...prev.assemblies, { material: '', unit: '' }]
+      assemblies: [...prev.assemblies, { material: '', quantity: '' }]
     }));
   };
 
@@ -109,7 +109,7 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
 
     // Filter out empty assemblies
     const validAssemblies = formData.assemblies.filter(
-      assembly => assembly.material && assembly.unit
+      assembly => assembly.material && assembly.quantity
     );
 
     const productData = {
@@ -138,9 +138,9 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
       // Create new assemblies
       for (const assembly of validAssemblies) {
         await apiService.createProductAssembly({
-          product_id: savedProduct.id,
-          material: assembly.material,
-          unit: parseFloat(assembly.unit)
+          product: savedProduct.id,
+          material: parseInt(assembly.material),
+          quantity: parseInt(assembly.quantity)
         });
       }
       
@@ -238,7 +238,7 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
                 >
                   <option value="">-- Odaberite materijal --</option>
                   {availableMaterials.map((mat, i) => (
-                    <option key={i} value={mat.name}>
+                    <option key={i} value={mat.id}>
                       {mat.name}
                     </option>
                   ))}
@@ -248,12 +248,12 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
                 <label className="form-label">Količina</label>
                 <input
                   type="number"
-                  value={assembly.unit}
-                  onChange={(e) => handleAssemblyChange(index, 'unit', e.target.value)}
+                  value={assembly.quantity}
+                  onChange={(e) => handleAssemblyChange(index, 'quantity', e.target.value)}
                   className="form-input"
                   placeholder="0"
                   min="0"
-                  step="0.01"
+                  step="1"
                   required
                 />
               </div>

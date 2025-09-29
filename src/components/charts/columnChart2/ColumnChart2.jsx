@@ -46,10 +46,10 @@ const MonthlyProfitChart = ({ sales }) => {
     // Calculate material costs for this sale
     let materialCosts = 0;
     product.materials.forEach(materialUsed => {
-      const material = materials.find(m => m.name === materialUsed.material);
+      const material = materials.find(m => m.id === materialUsed.material);
       if (material) {
         const costPerUnit = parseFloat(material.price_per_unit);
-        const unitsUsed = parseFloat(materialUsed.unit);
+        const unitsUsed = parseInt(materialUsed.quantity);
         materialCosts += costPerUnit * unitsUsed;
       }
     });

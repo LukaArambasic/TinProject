@@ -4,25 +4,35 @@ import apiService from '../../services/api';
 
 const ProductCard = ({ product, onEdit, onDelete }) => {
   const [assemblies, setAssemblies] = React.useState([]);
+  const [materials, setMaterials] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    const loadAssemblies = async () => {
+    const loadData = async () => {
       try {
-        const allAssemblies = await apiService.getProductAssemblies();
+        const [allAssemblies, allMaterials] = await Promise.all([
+          apiService.getProductAssemblies(),
+          apiService.getMaterials()
+        ]);
         const productAssemblies = allAssemblies.filter(assembly => assembly.product_id === product.id);
         setAssemblies(productAssemblies);
+        setMaterials(allMaterials);
       } catch (err) {
-        console.error('Error loading assemblies:', err);
+        console.error('Error loading data:', err);
         setAssemblies([]);
+        setMaterials([]);
       } finally {
         setLoading(false);
       }
     };
     
-    loadAssemblies();
+    loadData();
   }, [product.id]);
 
+  const getMaterialName = (materialId) => {
+    const material = materials.find(m => m.id === materialId);
+    return material ? material.name : `Material ID: ${materialId}`;
+  };
   const handleDelete = () => {
     if (window.confirm(`Jeste li sigurni da želite obrisati proizvod "${product.name}"?`)) {
       onDelete(product);
@@ -71,8 +81,8 @@ const ProductCard = ({ product, onEdit, onDelete }) => {
           <div className="materials-list">
             {assemblies.map((assembly, index) => (
               <div key={index} className="material-tag">
-                <span className="material-name">{assembly.material}</span>
-                <span className="material-quantity">{assembly.unit}</span>
+                <span className="material-name">{getMaterialName(assembly.material)}</span>
+                <span className="material-quantity">{assembly.quantity}</span>
               </div>
             ))}
           </div>

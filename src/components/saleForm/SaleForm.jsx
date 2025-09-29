@@ -13,6 +13,10 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
   const [materials, setMaterials] = useState([]);
   const [error, setError] = useState('');
 
+  const getMaterialName = (materialId) => {
+    const material = materials.find(m => m.id === materialId);
+    return material ? material.name : `Material ID: ${materialId}`;
+  };
   useEffect(() => {
     if (sale) {
       setFormData({
@@ -66,17 +70,18 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
     const requiredMaterials = selectedProduct.materials || [];
     
     for (const requiredMaterial of requiredMaterials) {
-      const materialInStock = materials.find(m => m.name === requiredMaterial.material);
+      const materialInStock = materials.find(m => m.id === requiredMaterial.material);
       if (!materialInStock) {
-        setError(`Materijal "${requiredMaterial.material}" nije pronađen u skladištu`);
+        setError(`Materijal s ID "${requiredMaterial.material}" nije pronađen u skladištu`);
         return false;
       }
       
-      const requiredAmount = parseFloat(requiredMaterial.unit);
+      const requiredAmount = parseInt(requiredMaterial.quantity);
       const availableStock = parseInt(materialInStock.stock);
       
       if (availableStock < requiredAmount) {
-        setError(`Nedovoljno materijala "${requiredMaterial.material}" na stanju. Potrebno: ${requiredAmount}, dostupno: ${availableStock}`);
+        const materialName = materialInStock.name;
+        setError(`Nedovoljno materijala "${materialName}" na stanju. Potrebno: ${requiredAmount}, dostupno: ${availableStock}`);
         return false;
       }
     }
@@ -194,7 +199,7 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
               <div className="materials-list">
                 {selectedProduct.materials.map((material, index) => (
                   <span key={index} className="material-tag">
-                    {material.material}: {material.unit}
+                    {getMaterialName(material.material)}: {material.quantity}
                   </span>
                 ))}
               </div>
