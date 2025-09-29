@@ -10,11 +10,17 @@ const ProductCard = ({ product, onEdit, onDelete }) => {
   React.useEffect(() => {
     const loadData = async () => {
       try {
+        console.log('Loading data for product:', product.id);
         const [allAssemblies, allMaterials] = await Promise.all([
           apiService.getProductAssemblies(),
           apiService.getMaterials()
         ]);
-        const productAssemblies = allAssemblies.filter(assembly => assembly.product_id === product.id);
+        console.log('All assemblies:', allAssemblies);
+        console.log('All materials:', allMaterials);
+        
+        const productAssemblies = allAssemblies.filter(assembly => assembly.product === product.id);
+        console.log('Product assemblies for product', product.id, ':', productAssemblies);
+        
         setAssemblies(productAssemblies);
         setMaterials(allMaterials);
       } catch (err) {
@@ -33,6 +39,7 @@ const ProductCard = ({ product, onEdit, onDelete }) => {
     const material = materials.find(m => m.id === materialId);
     return material ? material.name : `Material ID: ${materialId}`;
   };
+  
   const handleDelete = () => {
     if (window.confirm(`Jeste li sigurni da želite obrisati proizvod "${product.name}"?`)) {
       onDelete(product);
@@ -72,28 +79,26 @@ const ProductCard = ({ product, onEdit, onDelete }) => {
         </div>
       </div>
       
-      {!loading && assemblies.length > 0 && (
-        <div className="materials-section">
-          <div className="materials-title">
-            ⚙️
-            Potrebni materijali
-          </div>
+      <div className="materials-section">
+        <div className="materials-title">
+          ⚙️
+          Potrebni materijali
+        </div>
+        {loading ? (
+          <p className="text-muted text-sm">Učitavanje materijala...</p>
+        ) : assemblies.length > 0 ? (
           <div className="materials-list">
             {assemblies.map((assembly, index) => (
               <div key={index} className="material-tag">
                 <span className="material-name">{getMaterialName(assembly.material)}</span>
-                <span className="material-quantity">{assembly.quantity}</span>
+                <span className="material-quantity">x{assembly.quantity}</span>
               </div>
             ))}
           </div>
-        </div>
-      )}
-      
-      {loading && (
-        <div className="materials-section">
-          <p className="text-muted text-sm">Učitavanje materijala...</p>
-        </div>
-      )}
+        ) : (
+          <p className="text-muted text-sm">Nema definiranih materijala</p>
+        )}
+      </div>
     </div>
   );
 };
