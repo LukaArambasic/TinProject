@@ -4,7 +4,7 @@ import './MaterialForm.css';
 const MaterialForm = ({ material, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
     name: '',
-    costPerUnit: '',
+    price_per_unit: '',
     stock: ''
   });
 
@@ -12,7 +12,7 @@ const MaterialForm = ({ material, onSubmit, onCancel }) => {
     if (material) {
       setFormData({
         name: material.name || '',
-        costPerUnit: material.costPerUnit || '',
+        price_per_unit: material.price_per_unit || '',
         stock: material.stock || ''
       });
     }
@@ -34,7 +34,7 @@ const MaterialForm = ({ material, onSubmit, onCancel }) => {
       return;
     }
     
-    if (!formData.costPerUnit || isNaN(formData.costPerUnit)) {
+    if (!formData.price_per_unit || isNaN(formData.price_per_unit)) {
       alert('Molimo unesite valjanu cijenu');
       return;
     }
@@ -46,7 +46,7 @@ const MaterialForm = ({ material, onSubmit, onCancel }) => {
 
     const materialData = {
       ...formData,
-      costPerUnit: parseFloat(formData.costPerUnit).toFixed(2),
+      price_per_unit: parseFloat(formData.price_per_unit).toFixed(2),
       stock: parseInt(formData.stock)
     };
 
@@ -70,12 +70,12 @@ const MaterialForm = ({ material, onSubmit, onCancel }) => {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="costPerUnit" className="form-label">Cijena po jedinici (€)</label>
+            <label htmlFor="price_per_unit" className="form-label">Cijena po jedinici (€)</label>
             <input
               type="number"
-              id="costPerUnit"
-              value={formData.costPerUnit}
-              onChange={(e) => handleInputChange('costPerUnit', e.target.value)}
+              id="price_per_unit"
+              value={formData.price_per_unit}
+              onChange={(e) => handleInputChange('price_per_unit', e.target.value)}
               className="form-input"
               placeholder="0.00"
               min="0"

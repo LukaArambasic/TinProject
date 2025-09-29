@@ -4,8 +4,8 @@ import apiService from '../../services/api';
 
 const SaleForm = ({ sale, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
-    product: '',
-    quantity: 1,
+    product_id: '',
+    discount: 0,
     date: new Date().toISOString().split('T')[0]
   });
   const [availableProducts, setAvailableProducts] = useState([]);
@@ -16,8 +16,8 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
   useEffect(() => {
     if (sale) {
       setFormData({
-        product: sale.product || '',
-        quantity: sale.quantity || 1,
+        product_id: sale.product_id || '',
+        discount: sale.discount || 0,
         date: sale.date || new Date().toISOString().split('T')[0]
       });
     }
@@ -43,15 +43,14 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
   }, []);
 
   useEffect(() => {
-    if (formData.product) {
-      const product = availableProducts.find(p => p.name === formData.product);
+    if (formData.product_id) {
+      const product = availableProducts.find(p => p.id === parseInt(formData.product_id));
       setSelectedProduct(product);
       setError('');
     } else {
       setSelectedProduct(null);
       setError('');
     }
-  }, [formData.product, availableProducts]);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -61,7 +60,7 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
   };
 
   const validateStock = () => {
-    if (!selectedProduct || !formData.quantity) return true;
+    if (!selectedProduct || !formData.discount) return true;
 
     const requiredMaterials = selectedProduct.materials || [];
     
@@ -72,7 +71,7 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
         return false;
       }
       
-      const requiredAmount = parseFloat(requiredMaterial.unit) * parseInt(formData.quantity);
+      const requiredAmount = parseFloat(requiredMaterial.unit);
       const availableStock = parseInt(materialInStock.stock);
       
       if (availableStock < requiredAmount) {
@@ -86,26 +85,27 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
   };
 
   useEffect(() => {
-    if (selectedProduct && formData.quantity) {
+    if (selectedProduct && formData.discount >= 0) {
       validateStock();
     }
-  }, [selectedProduct, formData.quantity, materials]);
 
   const calculateTotal = () => {
-    if (!selectedProduct || !formData.quantity) return 0;
-    return (parseFloat(selectedProduct.pricePerUnit) * parseInt(formData.quantity)).toFixed(2);
+    if (!selectedProduct) return 0;
+    const basePrice = parseFloat(selectedProduct.price);
+    const discountAmount = (basePrice * parseFloat(formData.discount)) / 100;
+    return (basePrice - discountAmount).toFixed(2);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    if (!formData.product) {
+    if (!formData.product_id) {
       setError('Molimo odaberite proizvod');
       return;
     }
     
-    if (!formData.quantity || parseInt(formData.quantity) <= 0) {
-      setError('Molimo unesite valjanu količinu');
+    if (formData.discount < 0 || formData.discount > 100) {
+      setError('Popust mora biti između 0 i 100%');
       return;
     }
     
@@ -115,7 +115,8 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
 
     const saleData = {
       ...formData,
-      quantity: parseInt(formData.quantity),
+      product_id: parseInt(formData.product_id),
+      discount: parseFloat(formData.discount),
       profit: calculateTotal()
     };
 
@@ -127,32 +128,34 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
       <div className="form-section">
         <div className="form-row">
           <div className="form-group">
-            <label htmlFor="product" className="form-label">Proizvod</label>
+            <label htmlFor="product_id" className="form-label">Proizvod</label>
             <select
-              id="product"
-              value={formData.product}
-              onChange={(e) => handleInputChange('product', e.target.value)}
+              id="product_id"
+              value={formData.product_id}
+              onChange={(e) => handleInputChange('product_id', e.target.value)}
               className="form-select"
               required
             >
               <option value="">-- Odaberite proizvod --</option>
               {availableProducts.map((product, index) => (
-                <option key={index} value={product.name}>
-                  {product.name} (€{product.pricePerUnit})
+                <option key={index} value={product.id}>
+                  {product.name} (€{product.price})
                 </option>
               ))}
             </select>
           </div>
           <div className="form-group">
-            <label htmlFor="quantity" className="form-label">Količina</label>
+            <label htmlFor="discount" className="form-label">Popust (%)</label>
             <input
               type="number"
-              id="quantity"
-              value={formData.quantity}
-              onChange={(e) => handleInputChange('quantity', e.target.value)}
+              id="discount"
+              value={formData.discount}
+              onChange={(e) => handleInputChange('discount', e.target.value)}
               className="form-input"
-              placeholder="1"
-              min="1"
+              placeholder="0"
+              min="0"
+              max="100"
+              step="0.01"
               required
             />
           </div>
@@ -180,12 +183,12 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
         <div className="product-preview">
           <div className="product-preview-header">
             <span className="product-preview-title">{selectedProduct.name}</span>
-            <span className="product-price">€{selectedProduct.pricePerUnit}/kom</span>
+            <span className="product-price">€{selectedProduct.price}</span>
           </div>
           
           {selectedProduct.materials && selectedProduct.materials.length > 0 && (
             <div className="product-materials">
-              <div className="materials-title">Potrebni materijali po komadu:</div>
+              <div className="materials-title">Potrebni materijali:</div>
               <div className="materials-list">
                 {selectedProduct.materials.map((material, index) => (
                   <span key={index} className="material-tag">
@@ -196,18 +199,18 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
             </div>
           )}
           
-          {formData.quantity > 0 && (
+          {formData.discount >= 0 && (
             <div className="sale-summary">
               <div className="summary-row">
-                <span>Količina:</span>
-                <span>{formData.quantity} kom</span>
+                <span>Osnovna cijena:</span>
+                <span>€{selectedProduct.price}</span>
               </div>
               <div className="summary-row">
-                <span>Cijena po komadu:</span>
-                <span>€{selectedProduct.pricePerUnit}</span>
+                <span>Popust:</span>
+                <span>{formData.discount}%</span>
               </div>
               <div className="summary-row">
-                <span>Ukupno:</span>
+                <span>Finalna cijena:</span>
                 <span>€{calculateTotal()}</span>
               </div>
             </div>

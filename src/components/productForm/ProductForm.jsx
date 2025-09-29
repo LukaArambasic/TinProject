@@ -5,8 +5,8 @@ import apiService from '../../services/api';
 const ProductForm = ({ product, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
     name: '',
-    timeToMake: '',
-    pricePerUnit: '',
+    production_time: '',
+    price: '',
     materials: [{ material: '', unit: '' }]
   });
   const [availableMaterials, setAvailableMaterials] = useState([]);
@@ -27,8 +27,8 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
     if (product) {
       setFormData({
         name: product.name || '',
-        timeToMake: product.timeToMake || '',
-        pricePerUnit: product.pricePerUnit || '',
+        production_time: product.production_time || '',
+        price: product.price || '',
         materials: product.materials && product.materials.length > 0 
           ? product.materials 
           : [{ material: '', unit: '' }]
@@ -77,12 +77,12 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
       return;
     }
     
-    if (!formData.timeToMake || isNaN(formData.timeToMake)) {
+    if (!formData.production_time || isNaN(formData.production_time)) {
       alert('Molimo unesite valjano vrijeme izrade');
       return;
     }
     
-    if (!formData.pricePerUnit || isNaN(formData.pricePerUnit)) {
+    if (!formData.price || isNaN(formData.price)) {
       alert('Molimo unesite valjanu cijenu');
       return;
     }
@@ -94,7 +94,7 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
 
     const productData = {
       ...formData,
-      pricePerUnit: parseFloat(formData.pricePerUnit).toFixed(2),
+      price: parseFloat(formData.price).toFixed(2),
       materials: validMaterials
     };
 
@@ -118,12 +118,12 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="timeToMake" className="form-label">Vrijeme izrade (min)</label>
+            <label htmlFor="production_time" className="form-label">Vrijeme izrade (min)</label>
             <input
               type="number"
-              id="timeToMake"
-              value={formData.timeToMake}
-              onChange={(e) => handleInputChange('timeToMake', e.target.value)}
+              id="production_time"
+              value={formData.production_time}
+              onChange={(e) => handleInputChange('production_time', e.target.value)}
               className="form-input"
               placeholder="0"
               min="0"
@@ -131,12 +131,12 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="pricePerUnit" className="form-label">Prodajna cijena (€)</label>
+            <label htmlFor="price" className="form-label">Prodajna cijena (€)</label>
             <input
               type="number"
-              id="pricePerUnit"
-              value={formData.pricePerUnit}
-              onChange={(e) => handleInputChange('pricePerUnit', e.target.value)}
+              id="price"
+              value={formData.price}
+              onChange={(e) => handleInputChange('price', e.target.value)}
               className="form-input"
               placeholder="0.00"
               min="0"

@@ -38,7 +38,7 @@ const MonthlyProfitChart = ({ sales }) => {
 
   // Calculate actual profit for each sale
   const calculateActualProfit = (sale) => {
-    const product = products.find(p => p.name === sale.product);
+    const product = products.find(p => p.id === sale.product_id);
     if (!product || !product.materials) {
       return parseFloat(sale.profit); // Return original profit if no materials data
     }
@@ -48,8 +48,8 @@ const MonthlyProfitChart = ({ sales }) => {
     product.materials.forEach(materialUsed => {
       const material = materials.find(m => m.name === materialUsed.material);
       if (material) {
-        const costPerUnit = parseFloat(material.costPerUnit);
-        const unitsUsed = parseFloat(materialUsed.unit) * parseInt(sale.quantity);
+        const costPerUnit = parseFloat(material.price_per_unit);
+        const unitsUsed = parseFloat(materialUsed.unit);
         materialCosts += costPerUnit * unitsUsed;
       }
     });

@@ -83,7 +83,7 @@ const Sales = () => {
     };
 
     const filteredSales = sales.filter(sale =>
-        sale.product.toLowerCase().includes(searchTerm.toLowerCase())
+        sale.product_id.toString().includes(searchTerm.toLowerCase())
     );
 
     // Sort sales by date (newest first)
@@ -163,7 +163,7 @@ const Sales = () => {
                             <div className="sales-list">
                                 <div className="sales-header-row">
                                     <div className="header-cell">Proizvod</div>
-                                    <div className="header-cell">Količina</div>
+                                    <div className="header-cell">Popust</div>
                                     <div className="header-cell">Datum</div>
                                     <div className="header-cell">Profit</div>
                                     <div className="header-cell">Akcije</div>

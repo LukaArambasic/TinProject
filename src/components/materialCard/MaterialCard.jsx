@@ -56,7 +56,7 @@ const MaterialCard = ({ material, onEdit, onDelete, onSupply }) => {
         </div>
         <div className="material-detail">
           <span className="detail-label">Cijena po jedinici</span>
-          <span className="detail-value price-value">€{material.cost_per_unit || material.costPerUnit}</span>
+          <span className="detail-value price-value">€{material.price_per_unit}</span>
         </div>
       </div>
       

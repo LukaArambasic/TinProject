@@ -3,7 +3,7 @@ import './SaleCard.css';
 
 const SaleCard = ({ sale, onEdit, onDelete }) => {
   const handleDelete = () => {
-    if (window.confirm(`Jeste li sigurni da želite obrisati prodaju "${sale.product}"?`)) {
+    if (window.confirm(`Jeste li sigurni da želite obrisati prodaju?`)) {
       onDelete(sale);
     }
   };
@@ -16,8 +16,8 @@ const SaleCard = ({ sale, onEdit, onDelete }) => {
   return (
     <div className="sale-row">
       <div className="sale-content">
-        <h3 className="sale-product">{sale.product}</h3>
-        <span className="sale-quantity">{sale.quantity} kom</span>
+        <h3 className="sale-product">Proizvod ID: {sale.product_id}</h3>
+        <span className="sale-quantity">{sale.discount}% popust</span>
         <span className="sale-date">{formatDate(sale.date)}</span>
         <span className="sale-profit">€{sale.profit}</span>
         <div className="sale-actions">
