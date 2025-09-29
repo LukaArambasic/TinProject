@@ -85,8 +85,8 @@ const Sales = () => {
         sale.product_id.toString().includes(searchTerm.toLowerCase())
     );
 
-    // Sort sales by date (newest first)
-    const sortedSales = [...filteredSales].sort((a, b) => new Date(b.date) - new Date(a.date));
+    // Sort sales by ID (newest first, assuming higher ID = newer)
+    const sortedSales = [...filteredSales].sort((a, b) => b.id - a.id);
 
     return (
         <div className='App FlexRow'>
@@ -163,13 +163,12 @@ const Sales = () => {
                                 <div className="sales-header-row">
                                     <div className="header-cell">Proizvod</div>
                                     <div className="header-cell">Popust</div>
-                                    <div className="header-cell">Datum</div>
                                     <div className="header-cell">Profit</div>
                                     <div className="header-cell">Akcije</div>
                                 </div>
                                 {sortedSales.map((sale, index) => (
                                     <SaleCard
-                                        key={`${sale.product}-${sale.date}-${index}`}
+                                        key={`${sale.product_id}-${sale.id}-${index}`}
                                         sale={sale}
                                         onEdit={handleEditSale}
                                         onDelete={handleDeleteSale}

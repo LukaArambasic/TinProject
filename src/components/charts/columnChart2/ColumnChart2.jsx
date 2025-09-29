@@ -60,29 +60,22 @@ const MonthlyProfitChart = ({ sales }) => {
   };
 
   // Aggregate profits by month
-  const monthlyData = sales.reduce((acc, sale) => {
-    const date = new Date(sale.date);
-    const monthYear = `${date.getMonth() + 1}/${date.getFullYear()}`;
-    acc[monthYear] = (acc[monthYear] || 0) + calculateActualProfit(sale);
+  // Since there's no date field, we'll show total profit by product
+  const productData = sales.reduce((acc, sale) => {
+    const productId = `Product ${sale.product_id}`;
+    acc[productId] = (acc[productId] || 0) + calculateActualProfit(sale);
     return acc;
   }, {});
 
-  // Sort the month-year keys in ascending order
-  const sortedLabels = Object.keys(monthlyData).sort((a, b) => {
-    const dateA = new Date(`${a}/01`);
-    const dateB = new Date(`${b}/01`);
-    return dateA - dateB;
-  });
-
   // Extract labels and data for the chart
-  const labels = sortedLabels;
-  const chartValues = sortedLabels.map(monthYear => monthlyData[monthYear]);
+  const labels = Object.keys(productData);
+  const chartValues = Object.values(productData);
 
   // Chart data object
   const chartData = {
     labels: labels,
     datasets: [{
-      label: 'Mjesečni profit',
+      label: 'Profit po proizvodu',
       data: chartValues,
       backgroundColor: 'rgba(16, 185, 129, 0.8)',
       borderColor: 'rgba(16, 185, 129, 1)',
