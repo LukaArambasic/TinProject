@@ -82,11 +82,17 @@ const Sales = () => {
     };
 
     const filteredSales = sales.filter(sale =>
-        sale.product_id.toString().includes(searchTerm.toLowerCase())
+        sale.product_id.toString().includes(searchTerm.toLowerCase()) ||
+        (sale.date && sale.date.includes(searchTerm))
     );
 
-    // Sort sales by ID (newest first, assuming higher ID = newer)
-    const sortedSales = [...filteredSales].sort((a, b) => b.id - a.id);
+    // Sort sales by date (newest first), fallback to ID if no date
+    const sortedSales = [...filteredSales].sort((a, b) => {
+        if (a.date && b.date) {
+            return new Date(b.date) - new Date(a.date);
+        }
+        return b.id - a.id;
+    });
 
     return (
         <div className='App FlexRow'>
@@ -163,6 +169,7 @@ const Sales = () => {
                                 <div className="sales-header-row">
                                     <div className="header-cell">Proizvod</div>
                                     <div className="header-cell">Popust</div>
+                                    <div className="header-cell">Datum</div>
                                     <div className="header-cell">Profit</div>
                                     <div className="header-cell">Akcije</div>
                                 </div>

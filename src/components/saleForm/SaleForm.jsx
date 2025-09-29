@@ -5,7 +5,8 @@ import apiService from '../../services/api';
 const SaleForm = ({ sale, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
     product_id: '',
-    discount: 0
+    discount: 0,
+    date: new Date().toISOString().split('T')[0] // Today's date as default
   });
   const [availableProducts, setAvailableProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -20,7 +21,8 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
     if (sale) {
       setFormData({
         product_id: sale.product_id || '',
-        discount: sale.discount || 0
+        discount: sale.discount || 0,
+        date: sale.date || new Date().toISOString().split('T')[0]
       });
     }
   }, [sale]);
@@ -122,7 +124,8 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
       ...formData,
       product_id: parseInt(formData.product_id),
       discount: parseInt(formData.discount),
-      profit: calculateTotal()
+      profit: calculateTotal(),
+      date: formData.date
     };
 
     onSubmit(saleData);
@@ -161,6 +164,17 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
               min="0"
               max="100"
               step="1"
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="date" className="form-label">Datum prodaje</label>
+            <input
+              type="date"
+              id="date"
+              value={formData.date}
+              onChange={(e) => handleInputChange('date', e.target.value)}
+              className="form-input"
               required
             />
           </div>
