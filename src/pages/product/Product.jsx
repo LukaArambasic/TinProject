@@ -48,7 +48,8 @@ const Product = () => {
     const handleDeleteProduct = async (productToDelete) => {
         try {
             await apiService.deleteProduct(productToDelete.id);
-            setProducts(products.filter(product => product.id !== productToDelete.id));
+            // Reload products to get fresh data
+            await loadProducts();
         } catch (err) {
             alert('Greška pri brisanju proizvoda');
             console.error('Error deleting product:', err);
@@ -59,16 +60,14 @@ const Product = () => {
         try {
             if (editingProduct) {
                 // Update existing product
-                const updatedProduct = await apiService.updateProduct(editingProduct.id, productData);
-                setProducts(products.map(product => 
-                    product.id === editingProduct.id ? updatedProduct : product
-                ));
+                await apiService.updateProduct(editingProduct.id, productData);
             } else {
                 // Add new product
-                const newProduct = await apiService.createProduct(productData);
-                setProducts([...products, newProduct]);
+                await apiService.createProduct(productData);
             }
             
+            // Reload products to get fresh data
+            await loadProducts();
             setIsModalOpen(false);
             setEditingProduct(null);
         } catch (err) {

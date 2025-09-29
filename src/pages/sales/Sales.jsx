@@ -48,7 +48,8 @@ const Sales = () => {
     const handleDeleteSale = async (saleToDelete) => {
         try {
             await apiService.deleteSale(saleToDelete.id);
-            setSales(sales.filter(sale => sale.id !== saleToDelete.id));
+            // Reload sales to get fresh data
+            await loadSales();
         } catch (err) {
             alert('Greška pri brisanju prodaje');
             console.error('Error deleting sale:', err);
@@ -59,16 +60,14 @@ const Sales = () => {
         try {
             if (editingSale) {
                 // Update existing sale
-                const updatedSale = await apiService.updateSale(editingSale.id, saleData);
-                setSales(sales.map(sale => 
-                    sale.id === editingSale.id ? updatedSale : sale
-                ));
+                await apiService.updateSale(editingSale.id, saleData);
             } else {
                 // Add new sale
-                const newSale = await apiService.createSale(saleData);
-                setSales([...sales, newSale]);
+                await apiService.createSale(saleData);
             }
             
+            // Reload sales to get fresh data
+            await loadSales();
             setIsModalOpen(false);
             setEditingSale(null);
         } catch (err) {

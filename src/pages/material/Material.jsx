@@ -48,7 +48,8 @@ const Material = () => {
     const handleDeleteMaterial = async (materialToDelete) => {
         try {
             await apiService.deleteMaterial(materialToDelete.id);
-            setMaterials(materials.filter(material => material.id !== materialToDelete.id));
+            // Reload materials to get fresh data
+            await loadMaterials();
         } catch (err) {
             alert('Greška pri brisanju materijala');
             console.error('Error deleting material:', err);
@@ -63,9 +64,8 @@ const Material = () => {
             };
             
             await apiService.updateMaterial(materialToSupply.id, updatedMaterial);
-            setMaterials(materials.map(material => 
-                material.id === materialToSupply.id ? updatedMaterial : material
-            ));
+            // Reload materials to get fresh data
+            await loadMaterials();
         } catch (err) {
             alert('Greška pri ažuriranju zaliha');
             console.error('Error updating material stock:', err);
@@ -76,16 +76,14 @@ const Material = () => {
         try {
             if (editingMaterial) {
                 // Update existing material
-                const updatedMaterial = await apiService.updateMaterial(editingMaterial.id, materialData);
-                setMaterials(materials.map(material => 
-                    material.id === editingMaterial.id ? updatedMaterial : material
-                ));
+                await apiService.updateMaterial(editingMaterial.id, materialData);
             } else {
                 // Add new material
-                const newMaterial = await apiService.createMaterial(materialData);
-                setMaterials([...materials, newMaterial]);
+                await apiService.createMaterial(materialData);
             }
             
+            // Reload materials to get fresh data
+            await loadMaterials();
             setIsModalOpen(false);
             setEditingMaterial(null);
         } catch (err) {

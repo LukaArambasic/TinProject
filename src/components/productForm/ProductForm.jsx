@@ -28,12 +28,16 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
       // Load product assemblies for editing
       const loadProductAssemblies = async () => {
         try {
+          console.log('Loading assemblies for product:', product.id);
           const assemblies = await apiService.getProductAssemblies();
+          console.log('All assemblies:', assemblies);
           const productAssemblies = assemblies.filter(assembly => assembly.product_id === product.id);
+          console.log('Product assemblies:', productAssemblies);
           const assemblyData = productAssemblies.map(assembly => ({
             material: assembly.material || '',
             quantity: assembly.quantity || ''
           }));
+          console.log('Assembly data for form:', assemblyData);
           
           setFormData({
             name: product.name || '',
@@ -53,6 +57,14 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
       };
       
       loadProductAssemblies();
+    } else {
+      // Reset form for new product
+      setFormData({
+        name: '',
+        production_time: '',
+        price: '',
+        assemblies: [{ material: '', quantity: '' }]
+      });
     }
   }, [product]);
 

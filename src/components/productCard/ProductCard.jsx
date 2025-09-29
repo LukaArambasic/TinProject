@@ -10,16 +10,12 @@ const ProductCard = ({ product, onEdit, onDelete }) => {
   React.useEffect(() => {
     const loadData = async () => {
       try {
-        console.log('Loading data for product:', product.id);
         const [allAssemblies, allMaterials] = await Promise.all([
           apiService.getProductAssemblies(),
           apiService.getMaterials()
         ]);
-        console.log('All assemblies:', allAssemblies);
-        console.log('All materials:', allMaterials);
         
         const productAssemblies = allAssemblies.filter(assembly => assembly.product === product.id);
-        console.log('Product assemblies for product', product.id, ':', productAssemblies);
         
         setAssemblies(productAssemblies);
         setMaterials(allMaterials);
