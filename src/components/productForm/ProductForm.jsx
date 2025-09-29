@@ -31,7 +31,7 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
           console.log('Loading assemblies for product:', product.id);
           const assemblies = await apiService.getProductAssemblies();
           console.log('All assemblies:', assemblies);
-          const productAssemblies = assemblies.filter(assembly => assembly.product_id === product.id);
+          const productAssemblies = assemblies.filter(assembly => assembly.product === product.id);
           console.log('Product assemblies:', productAssemblies);
           const assemblyData = productAssemblies.map(assembly => ({
             material: assembly.material || '',
