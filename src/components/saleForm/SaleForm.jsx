@@ -101,13 +101,13 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    if (!formData.product) {
+    if (!formData.product_id) {
       setError('Molimo odaberite proizvod');
       return;
     }
     
-    if (!formData.quantity || parseInt(formData.quantity) <= 0) {
-      setError('Molimo unesite valjanu količinu');
+    if (formData.discount < 0 || formData.discount > 100) {
+      setError('Popust mora biti između 0 i 100%');
       return;
     }
     
@@ -117,7 +117,8 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
 
     const saleData = {
       ...formData,
-      quantity: parseInt(formData.quantity),
+      product_id: parseInt(formData.product_id),
+      discount: parseFloat(formData.discount),
       profit: calculateTotal()
     };
 
