@@ -130,32 +130,34 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
       <div className="form-section">
         <div className="form-row">
           <div className="form-group">
-            <label htmlFor="product" className="form-label">Proizvod</label>
+            <label htmlFor="product_id" className="form-label">Proizvod</label>
             <select
-              id="product"
-              value={formData.product}
-              onChange={(e) => handleInputChange('product', e.target.value)}
+              id="product_id"
+              value={formData.product_id}
+              onChange={(e) => handleInputChange('product_id', e.target.value)}
               className="form-select"
               required
             >
               <option value="">-- Odaberite proizvod --</option>
               {availableProducts.map((product, index) => (
-                <option key={index} value={product.name}>
-                  {product.name} (€{product.pricePerUnit})
+                <option key={index} value={product.id}>
+                  {product.name} (€{product.price})
                 </option>
               ))}
             </select>
           </div>
           <div className="form-group">
-            <label htmlFor="quantity" className="form-label">Količina</label>
+            <label htmlFor="discount" className="form-label">Popust (%)</label>
             <input
               type="number"
-              id="quantity"
-              value={formData.quantity}
-              onChange={(e) => handleInputChange('quantity', e.target.value)}
+              id="discount"
+              value={formData.discount}
+              onChange={(e) => handleInputChange('discount', e.target.value)}
               className="form-input"
-              placeholder="1"
-              min="1"
+              placeholder="0"
+              min="0"
+              max="100"
+              step="0.01"
               required
             />
           </div>
@@ -183,12 +185,12 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
         <div className="product-preview">
           <div className="product-preview-header">
             <span className="product-preview-title">{selectedProduct.name}</span>
-            <span className="product-price">€{selectedProduct.pricePerUnit}/kom</span>
+            <span className="product-price">€{selectedProduct.price}</span>
           </div>
           
           {selectedProduct.materials && selectedProduct.materials.length > 0 && (
             <div className="product-materials">
-              <div className="materials-title">Potrebni materijali po komadu:</div>
+              <div className="materials-title">Potrebni materijali:</div>
               <div className="materials-list">
                 {selectedProduct.materials.map((material, index) => (
                   <span key={index} className="material-tag">
@@ -199,18 +201,18 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
             </div>
           )}
           
-          {formData.quantity > 0 && (
+          {formData.discount >= 0 && (
             <div className="sale-summary">
               <div className="summary-row">
-                <span>Količina:</span>
-                <span>{formData.quantity} kom</span>
+                <span>Osnovna cijena:</span>
+                <span>€{selectedProduct.price}</span>
               </div>
               <div className="summary-row">
-                <span>Cijena po komadu:</span>
-                <span>€{selectedProduct.pricePerUnit}</span>
+                <span>Popust:</span>
+                <span>{formData.discount}%</span>
               </div>
               <div className="summary-row">
-                <span>Ukupno:</span>
+                <span>Finalna cijena:</span>
                 <span>€{calculateTotal()}</span>
               </div>
             </div>
