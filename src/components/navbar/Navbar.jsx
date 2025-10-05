@@ -5,11 +5,10 @@ import { Link } from 'react-router-dom';
 
 const Navbar = () => {
     const options = [
-        {name: "Početna", icon: "🏠", to: "/home"},
-        {name: "Materijal", icon: "🔧", to: "/material"},
-        {name: "Proizvod", icon: "📦", to: "/product"},
-        {name: "Prodaja", icon: "💰", to: "/sale"},
-        {name: "Podešavanja", icon: "⚙️", to: "/settings"},
+        {name: "Početna", icon: "🏠", to: "/home"}, 
+        {name: "Materijal", icon: "🔧", to: "/material"}, 
+        {name: "Proizvod", icon: "📦", to: "/product"}, 
+        {name: "Prodaja", icon: "💰", to: "/sale"}, 
     ]
 
   return (
