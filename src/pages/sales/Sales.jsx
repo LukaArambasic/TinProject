@@ -81,15 +81,10 @@ const Sales = () => {
         setEditingSale(null);
     };
 
-    const filteredSales = sales.filter(sale => {
-        const productId = sale.product?.id || sale.product_id;
-        const productName = sale.product?.name || '';
-        return (
-            (productId && productId.toString().includes(searchTerm.toLowerCase())) ||
-            productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (sale.date && sale.date.includes(searchTerm))
-        );
-    });
+    const filteredSales = sales.filter(sale =>
+        sale.product_id.toString().includes(searchTerm.toLowerCase()) ||
+        (sale.date && sale.date.includes(searchTerm))
+    );
 
     // Sort sales by date (newest first), fallback to ID if no date
     const sortedSales = [...filteredSales].sort((a, b) => {
