@@ -34,7 +34,7 @@
 
 .sale-content {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr 120px;
+  grid-template-columns: 2fr 1fr 0.8fr 1fr 1fr 120px;
   gap: var(--spacing-4);
   align-items: center;
   width: 100%;
@@ -51,6 +51,13 @@
   font-size: var(--font-size-sm);
   color: var(--accent-color);
   font-weight: var(--font-weight-medium);
+}
+
+.sale-units {
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  font-weight: var(--font-weight-medium);
+  text-align: center;
 }
 
 .sale-date {
@@ -110,7 +117,7 @@
 
 .sales-header-row {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr 120px;
+  grid-template-columns: 2fr 1fr 0.8fr 1fr 1fr 120px;
   gap: var(--spacing-4);
   align-items: center;
   background: linear-gradient(135deg, var(--secondary-color), var(--surface-color));
@@ -133,16 +140,18 @@
   .sale-content {
     grid-template-columns: 2fr 1fr 1fr 100px;
   }
-  
+
   .sales-header-row {
     grid-template-columns: 2fr 1fr 1fr 100px;
   }
-  
-  .sale-quantity {
+
+  .sale-quantity,
+  .sale-units {
     display: none;
   }
-  
-  .header-cell:nth-child(2) {
+
+  .header-cell:nth-child(2),
+  .header-cell:nth-child(3) {
     display: none;
   }
 }
@@ -163,12 +172,14 @@
   }
   
   .sale-quantity,
+  .sale-units,
   .sale-date {
     display: none;
   }
-  
+
   .header-cell:nth-child(2),
-  .header-cell:nth-child(3) {
+  .header-cell:nth-child(3),
+  .header-cell:nth-child(4) {
     display: none;
   }
   

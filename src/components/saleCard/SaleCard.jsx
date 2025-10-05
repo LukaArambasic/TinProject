@@ -43,6 +43,7 @@ const SaleCard = ({ sale, onEdit, onDelete }) => {
           {loading ? 'Učitavanje...' : productName}
         </h3>
         <span className="sale-quantity">{sale.discount}% popust</span>
+        <span className="sale-units">{sale.no_of_units_sold || 1}</span>
         <span className="sale-date">{formatDate(sale.date)}</span>
         <span className="sale-profit">€{sale.profit}</span>
         <div className="sale-actions">

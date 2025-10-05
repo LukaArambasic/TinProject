@@ -169,6 +169,7 @@ const Sales = () => {
                                 <div className="sales-header-row">
                                     <div className="header-cell">Proizvod</div>
                                     <div className="header-cell">Popust</div>
+                                    <div className="header-cell">Jedinice</div>
                                     <div className="header-cell">Datum</div>
                                     <div className="header-cell">Profit</div>
                                     <div className="header-cell">Akcije</div>

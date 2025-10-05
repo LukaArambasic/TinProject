@@ -6,6 +6,7 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
     product: '',
     discount: 0,
+    no_of_units_sold: 1,
     date: new Date().toISOString().split('T')[0] // Today's date as default
   });
   const [availableProducts, setAvailableProducts] = useState([]);
@@ -22,6 +23,7 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
       setFormData({
         product: sale.product || '',
         discount: sale.discount || 0,
+        no_of_units_sold: sale.no_of_units_sold || 1,
         date: sale.date || new Date().toISOString().split('T')[0]
       });
     }
@@ -126,6 +128,7 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
     const saleData = {
       product: parseInt(formData.product),
       discount: parseInt(formData.discount),
+      no_of_units_sold: parseInt(formData.no_of_units_sold),
       profit: parseFloat(calculateTotal()),
       date: formData.date
     };
@@ -165,6 +168,20 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
               placeholder="0"
               min="0"
               max="100"
+              step="1"
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="no_of_units_sold" className="form-label">Broj jedinica</label>
+            <input
+              type="number"
+              id="no_of_units_sold"
+              value={formData.no_of_units_sold}
+              onChange={(e) => handleInputChange('no_of_units_sold', e.target.value)}
+              className="form-input"
+              placeholder="1"
+              min="1"
               step="1"
               required
             />
