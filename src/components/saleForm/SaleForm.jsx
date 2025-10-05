@@ -212,7 +212,7 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
         <div className="product-preview">
           <div className="product-preview-header">
             <span className="product-preview-title">{selectedProduct.name}</span>
-            <span className="product-price">€{selectedProduct.price}</span>
+            <span className="product-price">€{calculateTotal()}</span>
           </div>
           
           {selectedProduct.materials && selectedProduct.materials.length > 0 && (
