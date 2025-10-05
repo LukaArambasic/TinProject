@@ -20,7 +20,7 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
   useEffect(() => {
     if (sale) {
       setFormData({
-        product_id: sale.product_id || '',
+        product_id: sale.product?.id || sale.product_id || '',
         discount: sale.discount || 0,
         date: sale.date || new Date().toISOString().split('T')[0]
       });
@@ -121,10 +121,9 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
     }
 
     const saleData = {
-      ...formData,
-      product_id: parseInt(formData.product_id),
+      product: parseInt(formData.product_id),
       discount: parseInt(formData.discount),
-      profit: calculateTotal(),
+      profit: parseFloat(calculateTotal()),
       date: formData.date
     };
 
