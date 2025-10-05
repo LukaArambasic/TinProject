@@ -9,20 +9,20 @@ const SaleCard = ({ sale, onEdit, onDelete }) => {
   React.useEffect(() => {
     const loadProductName = async () => {
       try {
-        if (sale.product_id) {
-          const product = await apiService.getProduct(sale.product_id);
+        if (sale.product) {
+          const product = await apiService.getProduct(sale.product);
           setProductName(product.name);
         }
       } catch (err) {
         console.error('Error loading product:', err);
-        setProductName(`Product ID: ${sale.product_id}`);
+        setProductName(`Product ID: ${sale.product}`);
       } finally {
         setLoading(false);
       }
     };
-    
+
     loadProductName();
-  }, [sale.product_id]);
+  }, [sale.product]);
 
   const handleDelete = () => {
     if (window.confirm(`Jeste li sigurni da želite obrisati prodaju?`)) {

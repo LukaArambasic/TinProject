@@ -82,7 +82,7 @@ const Sales = () => {
     };
 
     const filteredSales = sales.filter(sale =>
-        sale.product_id.toString().includes(searchTerm.toLowerCase()) ||
+        (sale.product && sale.product.toString().includes(searchTerm.toLowerCase())) ||
         (sale.date && sale.date.includes(searchTerm))
     );
 
@@ -175,7 +175,7 @@ const Sales = () => {
                                 </div>
                                 {sortedSales.map((sale, index) => (
                                     <SaleCard
-                                        key={`${sale.product_id}-${sale.id}-${index}`}
+                                        key={`${sale.product}-${sale.id}-${index}`}
                                         sale={sale}
                                         onEdit={handleEditSale}
                                         onDelete={handleDeleteSale}

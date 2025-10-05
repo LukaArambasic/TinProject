@@ -4,7 +4,7 @@ import apiService from '../../services/api';
 
 const SaleForm = ({ sale, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
-    product_id: '',
+    product: '',
     discount: 0,
     date: new Date().toISOString().split('T')[0] // Today's date as default
   });
@@ -20,7 +20,7 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
   useEffect(() => {
     if (sale) {
       setFormData({
-        product_id: sale.product_id || '',
+        product: sale.product || '',
         discount: sale.discount || 0,
         date: sale.date || new Date().toISOString().split('T')[0]
       });
@@ -47,15 +47,15 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
   }, []);
 
   useEffect(() => {
-    if (formData.product_id) {
-      const product = availableProducts.find(p => p.id === parseInt(formData.product_id));
+    if (formData.product) {
+      const product = availableProducts.find(p => p.id === parseInt(formData.product));
       setSelectedProduct(product);
       setError('');
     } else {
       setSelectedProduct(null);
       setError('');
     }
-  }, [formData.product_id, availableProducts]);
+  }, [formData.product, availableProducts]);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -105,26 +105,25 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    if (!formData.product_id) {
+
+    if (!formData.product) {
       setError('Molimo odaberite proizvod');
       return;
     }
-    
+
     if (formData.discount < 0 || formData.discount > 100) {
       setError('Popust mora biti između 0 i 100%');
       return;
     }
-    
+
     if (!validateStock()) {
       return;
     }
 
     const saleData = {
-      ...formData,
-      product_id: parseInt(formData.product_id),
+      product: parseInt(formData.product),
       discount: parseInt(formData.discount),
-      profit: calculateTotal(),
+      profit: parseFloat(calculateTotal()),
       date: formData.date
     };
 
@@ -136,11 +135,11 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
       <div className="form-section">
         <div className="form-row">
           <div className="form-group">
-            <label htmlFor="product_id" className="form-label">Proizvod</label>
+            <label htmlFor="product" className="form-label">Proizvod</label>
             <select
-              id="product_id"
-              value={formData.product_id}
-              onChange={(e) => handleInputChange('product_id', e.target.value)}
+              id="product"
+              value={formData.product}
+              onChange={(e) => handleInputChange('product', e.target.value)}
               className="form-select"
               required
             >
