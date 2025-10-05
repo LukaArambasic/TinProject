@@ -13,11 +13,16 @@ class ApiService {
 
     try {
       const response = await fetch(url, config);
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
+      // Handle empty responses (e.g., 204 No Content for DELETE)
+      if (response.status === 204 || response.headers.get('content-length') === '0') {
+        return null;
+      }
+
       const data = await response.json();
       return data;
     } catch (error) {
