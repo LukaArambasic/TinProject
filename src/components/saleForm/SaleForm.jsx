@@ -105,7 +105,9 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
     if (!selectedProduct) return 0;
     const basePrice = parseFloat(selectedProduct.price);
     const discountAmount = (basePrice * parseFloat(formData.discount)) / 100;
-    return (basePrice - discountAmount).toFixed(2);
+    const pricePerUnit = basePrice - discountAmount;
+    const units = parseInt(formData.no_of_units_sold) || 1;
+    return (pricePerUnit * units).toFixed(2);
   };
 
   const handleSubmit = (e) => {
@@ -229,7 +231,7 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
           {formData.discount >= 0 && (
             <div className="sale-summary">
               <div className="summary-row">
-                <span>Osnovna cijena:</span>
+                <span>Osnovna cijena po jedinici:</span>
                 <span>€{selectedProduct.price}</span>
               </div>
               <div className="summary-row">
@@ -237,7 +239,15 @@ const SaleForm = ({ sale, onSubmit, onCancel }) => {
                 <span>{formData.discount}%</span>
               </div>
               <div className="summary-row">
-                <span>Finalna cijena:</span>
+                <span>Cijena po jedinici nakon popusta:</span>
+                <span>€{(parseFloat(selectedProduct.price) - (parseFloat(selectedProduct.price) * parseFloat(formData.discount)) / 100).toFixed(2)}</span>
+              </div>
+              <div className="summary-row">
+                <span>Broj jedinica:</span>
+                <span>{formData.no_of_units_sold || 1}</span>
+              </div>
+              <div className="summary-row" style={{ fontWeight: 'bold', borderTop: '1px solid var(--border-color)', paddingTop: 'var(--spacing-2)', marginTop: 'var(--spacing-2)' }}>
+                <span>Ukupna cijena:</span>
                 <span>€{calculateTotal()}</span>
               </div>
             </div>
