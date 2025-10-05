@@ -178,7 +178,6 @@ const Material = () => {
                                         key={`${material.name}-${index}`}
                                         material={material}
                                         onEdit={handleEditMaterial}
-                                        onEdit={handleEditMaterial}
                                         onDelete={handleDeleteMaterial}
                                         onSupply={handleSupplyMaterial}
                                     />

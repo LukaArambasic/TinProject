@@ -6,6 +6,7 @@ import Login from './pages/login/Login';
 import Material from './pages/material/Material';
 import Product from './pages/product/Product';
 import Sales from './pages/sales/Sales';
+import Settings from './pages/settings/Settings';
 
 function App() {
   const router = createBrowserRouter([
@@ -28,6 +29,10 @@ function App() {
     {
       path: "/sale",
       element: <Sales />
+    },
+    {
+      path: "/settings",
+      element: <Settings />
     },
   ]);
 
