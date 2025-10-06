@@ -2,9 +2,8 @@ import React, { useEffect, useState } from "react";
 import './Sales.css';
 import '../../App.css';
 import apiService from '../../services/api';
-import Header from "../../components/header/Header";
+import Layout from "../../components/layout/Layout";
 import Container from "../../components/container/Container";
-import Navbar from "../../components/navbar/Navbar";
 import Modal from "../../components/modal/Modal";
 import SaleCard from "../../components/saleCard/SaleCard";
 import SaleForm from "../../components/saleForm/SaleForm";
@@ -95,12 +94,8 @@ const Sales = () => {
     });
 
     return (
-        <div className='App FlexRow'>
-            <Navbar />
-            <div className="main-content">
-                <Header pageName="Prodaja" />
-                <div className='RestOfScreen'>
-                    <Container headline="💳 Upravljanje prodajama">
+        <Layout pageName="Prodaja">
+            <Container headline="💳 Upravljanje prodajama">
                         {error && (
                             <div className="error-message mb-4">
                                 {error}
@@ -186,9 +181,7 @@ const Sales = () => {
                         )}
                         </>
                         )}
-                    </Container>
-                </div>
-            </div>
+            </Container>
 
             <Modal
                 isOpen={isModalOpen}
@@ -201,7 +194,7 @@ const Sales = () => {
                     onCancel={handleCloseModal}
                 />
             </Modal>
-        </div>
+        </Layout>
     );
 }
 

@@ -8,6 +8,13 @@
   padding: 0 var(--spacing-6);
   box-shadow: var(--shadow-sm);
   position: relative;
+  z-index: 100;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
 }
 
 .pageName {

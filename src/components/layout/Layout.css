@@ -1,0 +1,17 @@
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .FlexRow {
+    display: block;
+  }
+
+  .main-content {
+    width: 100%;
+  }
+}

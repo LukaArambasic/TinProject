@@ -2,9 +2,8 @@ import React, { useEffect, useState } from "react";
 import './Material.css';
 import '../../App.css';
 import apiService from '../../services/api';
-import Header from "../../components/header/Header";
+import Layout from "../../components/layout/Layout";
 import Container from "../../components/container/Container";
-import Navbar from "../../components/navbar/Navbar";
 import Modal from "../../components/modal/Modal";
 import MaterialCard from "../../components/materialCard/MaterialCard";
 import MaterialForm from "../../components/materialForm/MaterialForm";
@@ -102,12 +101,8 @@ const Material = () => {
     );
 
     return (
-        <div className='App FlexRow'>
-            <Navbar />
-            <div className="main-content">
-                <Header pageName="Materijali" />
-                <div className='RestOfScreen'>
-                    <Container headline="📦 Upravljanje materijalima">
+        <Layout pageName="Materijali">
+            <Container headline="📦 Upravljanje materijalima">
                         {error && (
                             <div className="error-message mb-4">
                                 {error}
@@ -186,9 +181,7 @@ const Material = () => {
                         )}
                         </>
                         )}
-                    </Container>
-                </div>
-            </div>
+            </Container>
 
             <Modal
                 isOpen={isModalOpen}
@@ -201,7 +194,7 @@ const Material = () => {
                     onCancel={handleCloseModal}
                 />
             </Modal>
-        </div>
+        </Layout>
     );
 }
 

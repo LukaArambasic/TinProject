@@ -2,9 +2,8 @@ import React, { useEffect, useState } from "react";
 import './Home.css';
 import '../../App.css';
 import apiService from '../../services/api';
-import Header from "../../components/header/Header";
+import Layout from "../../components/layout/Layout";
 import Container from "../../components/container/Container";
-import Navbar from "../../components/navbar/Navbar";
 import ColumnChart from "../../components/charts/columnChart/ColumnChart";
 import MonthlyProfitChart from "../../components/charts/columnChart2/ColumnChart2";
 
@@ -98,22 +97,16 @@ const SalesChart = () => {
 
 const Home = () => {
     return (
-        <div className='App FlexRow'>
-            <Navbar />
-            <div className="main-content">
-                <Header pageName="Početna" />
-                <div className='RestOfScreen'>
-                    <div className="grid grid-cols-1 gap-6">
-                        <Container headline="📊 Materijali na stanju">
-                            <MaterialStockChart />
-                        </Container>
-                        <Container headline="💰 Prodaja po mjesecima">
-                            <SalesChart />
-                        </Container>
-                    </div>
-                </div>
+        <Layout pageName="Početna">
+            <div className="grid grid-cols-1 gap-6">
+                <Container headline="📊 Materijali na stanju">
+                    <MaterialStockChart />
+                </Container>
+                <Container headline="💰 Prodaja po mjesecima">
+                    <SalesChart />
+                </Container>
             </div>
-        </div>
+        </Layout>
     );
 }
 

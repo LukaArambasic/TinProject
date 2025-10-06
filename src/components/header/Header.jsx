@@ -1,10 +1,13 @@
-import React, {useState} from 'react';
-import './Header.css'; // Import your CSS file for styling
+import React from 'react';
+import './Header.css';
 
-const Header = ({pageName="Home"}) => {
+const Header = ({pageName="Home", children}) => {
     return (
         <div className="header">
-            <div className="pageName">{pageName}</div>
+            <div className="header-left">
+                {children}
+                <div className="pageName">{pageName}</div>
+            </div>
         </div>
     );
 };

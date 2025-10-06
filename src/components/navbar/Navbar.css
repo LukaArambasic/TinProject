@@ -10,6 +10,11 @@
   box-shadow: var(--shadow-lg);
   overflow-y: auto;
   position: relative;
+  transition: transform 0.3s ease;
+}
+
+.navbar-overlay {
+  display: none;
 }
 
 .navbarTitle {
@@ -130,23 +135,47 @@
 
 @media (max-width: 768px) {
   .navbar {
-    width: 200px;
-    padding: var(--spacing-3);
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 280px;
+    padding: var(--spacing-6);
+    z-index: 1000;
+    transform: translateX(-100%);
   }
-  
+
+  .navbar.open {
+    transform: translateX(0);
+    box-shadow: var(--shadow-lg), 4px 0 20px rgba(0, 0, 0, 0.3);
+  }
+
+  .navbar-overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    z-index: 999;
+    animation: fadeIn 0.3s ease;
+  }
+
   .navbarTitle {
-    font-size: var(--font-size-lg);
-    margin-bottom: var(--spacing-4);
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--spacing-6);
   }
-  
+
   .navOption {
-    font-size: var(--font-size-xs);
-    padding: var(--spacing-2);
+    font-size: var(--font-size-base);
+    padding: var(--spacing-4);
+    min-height: 48px;
   }
-  
+
   .icon {
-    width: 16px;
-    height: 16px;
-    margin-right: var(--spacing-2);
+    width: 20px;
+    height: 20px;
+    margin-right: var(--spacing-3);
   }
 }
